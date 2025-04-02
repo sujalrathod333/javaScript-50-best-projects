@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown project</title>
+  <style>
+    *{
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    body{
+      text-align: center;
+      background-color: rgb(150, 200, 243);
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    }
+
+    h2{
+      margin: 20px;
+    }
+    label{
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      font-size: medium;
+    }
+    input{
+      background-color: beige;
+      padding: 1px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: blue;
+    }
+    button{
+      background-color: #38bee7;
+      border-radius: 10px;
+      padding: 2px;
+      margin: 1px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: rgb(14, 11, 11);
+    }
+
+    button:hover{
+      background-color: #328fcc;
+    }
+    #Timer{
+      font-size: medium;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      color: rgb(248, 12, 12);
+    }
+
+  </style>
+</head>
+<body>
+  <h2>Coundown Timer</h2>
+  <label for="timeInput">Enter a time in seconds: </label>
+  <input type="number" id="timeInput" placeholder="seonds">
+  <button id="btn" onclick="startTimer()"> Start Timer</button>
+  <div id="Timer">00:00</div>
+  <script>
+    function startTimer(){
+      let inputTime = document.getElementById("timeInput").value;
+      if (inputTime <=0 || isNaN(inputTime)){
+        alert("Enter a valid time,");
+        return;
+      }
+      let TimerDisplay = document.getElementById("Timer");
+      let countdown= setInterval(function() {
+        let minutes = Math.floor(inputTime/60);
+        let seconds = inputTime % 60;
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        TimerDisplay.textContent= minutes + ":" + seconds
+
+        if(inputTime <=0 ){
+          clearInterval(countdown);
+          alert("Time's up!");
+        } else {
+          inputTime--;
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

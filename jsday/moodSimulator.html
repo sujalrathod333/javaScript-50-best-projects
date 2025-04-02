@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Lightnening Simulator</title>
+  <style>
+    body{
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+      min-height: 100vh;
+      background-color: #2d3436;
+      text-align: center;
+    }
+
+    .container{
+      text-align: center;
+      color: #333;
+    }
+
+    h1{
+      color: #dfe6e9;
+    }
+
+    .controls{
+      margin: 20px 0;
+    }
+
+    label{
+      display: block;
+      margin: 10px 0;
+      font-size: 18px;
+    }
+
+    input{
+      width: 200px;
+      margin-left: 10px;
+    }
+
+    button{
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #0984e3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+     margin: 30px;
+    }
+
+    button:hover{
+      background-color: #0652dd;
+    }
+
+    .light{
+      width: 300px;
+      height: 230px;
+      background-color: rgb(128, 128, 128);
+      box-shadow: 0 0 50px rgba(255, 255, 255, 0.5);;
+      transition: background-color 0.3s ease;
+    }
+
+    .light.pulse{
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100%{
+        opacity: 1;
+      }
+      50%{ opacity: 0.3;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mood Lightnening Simulator</h1>
+    <div class="controls">
+      <label>Red: <span id="redValue">128</span></label>
+      <input type="range" name="red" id="redSlider" min="0" max="255" value="128">
+      <label>Green: <span id="greenValue">128</span></label>
+      <input type="range" name="green" id="greenSlider" min="0" max="255" value="128">
+      <label>Blue: <span id="blueValue">128</span></label>
+      <input type="range" name="blue" id="blueSlider" min="0" max="255" value="128">
+      
+    </div>
+    <button id="pulseBtn">Pulse Light</button>
+    <div class="light" id="light"></div>
+  </div>
+ <script>
+  const redValue=document.getElementById("redValue");
+  const redSlider=document.getElementById("redSlider");
+  const greenValue=document.getElementById("greenValue");
+  const greenSlider=document.getElementById("greenSlider");
+  const blueValue=document.getElementById("blueValue");
+  const blueSlider=document.getElementById("blueSlider");
+  const pulseBtn=document.getElementById("pulseBtn");
+  const light=document.getElementById("light");
+
+  function updateLight(){
+
+    const red=redSlider.value;
+    const green=greenSlider.value;
+    const blue=blueSlider.value;
+
+    redValue.textContent=red;
+    greenValue.textContent=green;
+    blueValue.textContent=blue;
+
+    light.style.backgroundColor=`rgb(${red}, ${green}, ${blue})`;
+
+  }
+
+  redSlider.addEventListener("input", updateLight);
+  greenSlider.addEventListener("input", updateLight);
+  blueSlider.addEventListener("input", updateLight);
+
+  pulseBtn.addEventListener("click", ()=>{
+    light.classList.toggle("pulse");
+    pulseBtn.textContent=light.classList.contains("pulse") ? "Stop Pulse" : "Pulse Light";
+  });
+
+
+ </script>
+</body>
+</html>

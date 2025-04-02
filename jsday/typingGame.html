@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Game</title>
+  <style>
+     body{
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #282c34;
+      color: white;
+      text-align: center;
+      height: 100vh;
+    }
+
+  .container{
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    background: #333;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  button{
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: #7b4bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 5px;
+  }
+  input{
+    width: 80%;
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 10px;
+    border-radius: 5px;
+  }
+  button:hover{
+    background: #583fe4;
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Typing speed Test</h2>
+    <p id="sentence">Sentence Loading.....</p>
+    <input type="text" id="inputBox" placeholder="Start Typing here..." autofocus>
+    <button id="restartBtn">Restart</button>
+    <p id="result"></p>
+  </div>
+  <script>
+    const sentence = [
+      "Javascript makes web page interactive",
+      "Typing speed is a useful skill",
+      "Coding is my hobby",
+      "cascading style sheet",
+      "you are improving with every challenge",
+      "The quick brown fox jumps over the lazy dog.",
+  "JavaScript is a versatile programming language.",
+  "Coding every day improves your problem-solving skills.",
+  "Debugging is just another way of learning.",
+  "Always declare variables with meaningful names.",
+  "Functions help to keep your code organized and reusable.",
+  "Frontend development requires HTML, CSS, and JavaScript.",
+  "Loops are useful for executing code multiple times.",
+  "Asynchronous programming makes JavaScript powerful.",
+  "Practice makes perfect, keep coding every day!",
+  "Typing speed is crucial for developers and programmers.",
+  "Objects and arrays are fundamental data structures in JavaScript.",
+  "Writing clean code improves readability and maintainability.",
+  "Use comments wisely to explain complex logic in code.",
+  "Keyboard shortcuts can boost your productivity.",
+  "APIs allow communication between different software applications.",
+  "Regular expressions help in pattern matching and text processing.",
+  "Git is an essential tool for version control and collaboration.",
+  "The DOM represents the structure of a web page in JavaScript.",
+  "Always test your code to catch bugs early.",
+  "ES6 introduced new features like arrow functions and template literals.",
+  "Frameworks like React and Vue simplify frontend development.",
+  "A promise represents a value that may be available in the future.",
+  "The console is a useful tool for debugging JavaScript code.",
+  "JavaScript runs in the browser and on the server with Node.js."
+    ]
+
+    const sentenceElem = document.getElementById("sentence");
+    const inputBox = document.getElementById("inputBox");
+    const restartBtn = document.getElementById("restartBtn");
+    const resultElem = document.getElementById("result");
+
+    let startTime = null;
+     let sentenceText = "";
+
+    function startTest() {
+      sentenceText = sentence[Math.floor(Math.random() * sentence.length)];
+      sentenceElem.textContent=sentenceText;
+      inputBox.value="";
+      resultElem.textContent="";
+      startTime = null;
+      inputBox.focus();
+    }
+
+    function checkTyping(){
+      if(startTime === null){
+        startTime = Date.now();
+      }
+      if(inputBox.value.trim().toLowerCase() === sentenceText.toLowerCase()){
+        let endTime= Date.now();
+        let timeTaken = (endTime - startTime) / 1000;
+        let words = sentenceText.split(" ").length;
+        let wpm = Math.round((words / timeTaken) * 60);
+
+        if (timeTaken < 1) {
+          wpm = words;
+        }
+
+        resultElem.textContent= `Your Speed : ${wpm} WPM`;
+      }
+    }
+
+    inputBox.addEventListener("input", checkTyping);
+    restartBtn.addEventListener("click", startTest)
+
+    startTest();
+  </script>
+</body>
+</html>

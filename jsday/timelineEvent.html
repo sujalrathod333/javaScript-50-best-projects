@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timeline Event</title>
+  <style>
+    body{
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      min-height: 100vh;
+      background-color: #f1f2f6;
+    }
+
+    .container{
+      text-align: center;
+      max-width: 800px;
+      padding: 20px;
+    }
+
+    h1{
+      color: #2f3542;
+    }
+
+    .form{
+      margin: 20px 0;
+    }
+
+    input{
+      font-size: 16px;
+      padding: 8px;
+      margin: 5px;
+      border-radius: 5px;
+      border: 1px solid #ced4da;
+    }
+
+    button{
+      padding: 8px 16px;
+      font-size: 16px;
+      margin: 5px;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #4b6584;
+    }
+
+    button:hover{
+      background-color: #3867d6;
+    }
+
+    #clearBtn:hover{
+      background-color: #b33939;
+    }
+
+    #clearBtn{
+      background-color: #e55039;
+    }
+
+    .timeline{
+      position: relative;
+      margin-top: 20px;
+      padding-left: 20px;
+    }
+
+    .timeline::before{
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background-color: #4b6584;
+    }
+
+    .event{
+      position: relative;
+      margin: 20px 0 ;
+      padding-left: 40px;
+      text-align: left;
+
+    }
+
+    .event::before{
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 10px;
+      left: 5px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #4b6584;
+      transform: translateY(-50%);
+    }
+
+    .event-year{
+      font-weight: bold;
+      color: #4b6584;
+      font-size: 18px;
+    }
+
+    .event-desc{
+      color: #2f3542;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Interactive Timeline Builder</h1>
+    <div class="form">
+      <input type="number" name="year" id="yearInput" min="1" max="9999" placeholder="Year">
+      <input type="text" name="text" id="eventInput" placeholder="Event Description">
+      <button id="addBtn">Add Event</button>
+      <button id="clearBtn">Clear Timeline</button>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+  <script>
+    const yearInput= document.getElementById("yearInput");
+    const eventInput=document.getElementById("eventInput");
+    const addBtn=document.getElementById("addBtn");
+    const clearBtn=document.getElementById("clearBtn");
+    const timeline=document.getElementById("timeline");
+
+    let events=[];
+
+    addBtn.addEventListener("click", ()=> {
+      const year = parseInt(yearInput.value);
+      const description = eventInput.value.trim();
+
+      if(isNaN(year) || year < 1 || year > 9999 || !description){
+        alert("Please enter a year between 1 and 9999 and description");
+        return;
+      }
+
+      events.push({ year, description});
+      events.sort((a,b)=> a.year- b.year);
+
+      renderTimeline();
+
+      yearInput.value='';
+      eventInput.value="";
+
+    });
+
+    function renderTimeline(){
+      timeline.innerHTML="";
+      events.forEach(event => {
+        const eventDiv=document.createElement("div");
+        eventDiv.className="event";
+        eventDiv.innerHTML=`
+        <span class="event-year">${event.year}</span>
+        <p class="event-desc" >${event.description}</p>`;
+        timeline.appendChild(eventDiv);
+      });
+    }
+
+    clearBtn.addEventListener("click", ()=> {
+      events=[];
+      timeline.innerHTML="";
+    });
+
+    renderTimeline();
+  </script>
+</body>
+</html>

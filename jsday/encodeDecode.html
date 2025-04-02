@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body{
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      background-color: #1a1a1a;
+      color: #fff;
+    }
+
+    .container{
+      text-align: center;
+      background: #333;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+    }
+
+    h1{
+      color: #0f0;
+      font-size: 24px;
+    }
+    textarea{
+      width: 100%;
+      max-width: 400px;
+      height: 100px;
+      margin:  10px 0;
+      padding: 10px;
+      font-size: 16px;
+      background: #222;
+      color: #fff;
+      border: 1px solid #0f0;
+      border-radius: 5px;
+      resize: none;
+    }
+
+    .controls{
+      margin: 10px 0;
+    }
+
+    select, button{
+      padding: 8px;
+      font-size: 16px;
+      background-color: #0f0;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover{
+      background-color: #00cc00;
+    }
+
+    .result{
+      margin-top: 20px;
+      font-size: 18px;
+      color: #0f0;
+      word-wrap: break-word;
+      max-width: 400px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Secret Message Encoder/Decoder</h1>
+    <textarea name="message" id="messageInput" placeholder="Enter your message here"></textarea>
+    <div class="controls">
+      <select  id="actionSelect">
+        <option value="encode">Encode</option>
+        <option value="decode">Decode</option>
+      </select>
+      <button id="processBtn">Process Message</button>
+    </div>
+    <div class="result" id="result">Your Secret message will appear here.....</div>
+  </div>
+  <script>
+    const messageInput= document.getElementById("messageInput");
+    const actionSelect= document.getElementById("actionSelect");
+    const processBtn= document.getElementById("processBtn");
+    const result=document.getElementById("result");
+
+    processBtn.addEventListener("click", processMessage);
+
+    function processMessage(){
+      const Message=messageInput.value;
+      const action = actionSelect.value;
+
+      if (!Message) {
+        result.textContent=" Please enter a message"
+        return;
+      }
+      const shift=3;
+      let processedText="";
+      for (let i = 0; i < Message.length; i++) {
+        let char = Message[i];
+        if (char.match(/[a-zA-Z]/)) {
+          const isUpperCase = char === char.toUpperCase();
+          char = char.toLowerCase();
+          let code= char.charCodeAt(0);
+
+          if (action ==="encode") {
+            code = ((code - 97 + shift)% 26) + 97;
+          } else {
+            code = ((code - 97 - shift + 26)% 26) + 97;
+          }
+          char= String.fromCharCode(code);
+          if(isUpperCase) char = char.toUpperCase();
+        }
+        processedText += char;
+      }
+      result.textContent = processedText;
+    }
+  </script>
+</body>
+</html>

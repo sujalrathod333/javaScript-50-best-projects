@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Dice</title>
+  <style>
+    body{
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      background-color: #f9e79f;
+    }
+
+    .container{
+      text-align: center;
+    }
+
+    h1{
+      color: #2c3e50;
+    }
+
+    select{
+      padding: 8px;
+      font-size: 16px;
+      margin: 10px;
+    }
+
+    button{
+      padding: 10px 20px;
+      font-size: 17px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover{
+      background-color: #c0392b;
+    }
+
+    .dice-container{
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .die{
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fff;
+      border: 2px solid #2c3e50;
+      color: #2c3e50;
+      border-radius: 10px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .rolling{
+      animation: roll .5s infinite;
+    }
+
+    #total{
+      font-size: 20px;
+      color: #2c3e50;
+    }
+
+    @keyframes roll {
+      0%{ transform: rotate(0deg);}
+      25%{ transform: rotate(90deg);}
+      50%{ transform: rotate(180deg);}
+      75%{ transform: rotate(270deg);}
+      100%{ transform: rotate(360deg);}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Virtual Dice Roller</h1>
+    <select name="select" id="diceCountSelect">
+      <option value="1"> 1 die</option>
+      <option value="2"> 2 dice</option>
+      <option value="3"> 3 dice</option>
+      <option value="4"> 4 dice</option>
+    </select>
+    <button id="rollBtn">Roll The Dice</button>
+    <div id="diceContainer" class="dice-container"></div>
+    <p id="total">Total: 0</p>
+  </div>
+  <script>
+    const diceCountSelect=document.getElementById("diceCountSelect");
+    const rollBtn=document.getElementById("rollBtn");
+    const diceContainer=document.getElementById("diceContainer");
+    const total=document.getElementById("total");
+
+    rollBtn.addEventListener("click", rollDice);
+
+    function rollDice(){
+      const diceCount= parseInt(diceCountSelect.value);
+      rollBtn.disabled=true;
+      diceContainer.innerHTML="";
+
+      const dice=[];
+      let totalValue=0;
+      for(let i=0; i<diceCount; i++){
+        const die=document.createElement("div");
+        die.className="die rolling";
+        die.textContent="?";
+        diceContainer.appendChild(die);
+        dice.push(die);
+      }
+
+      setTimeout(()=> {
+        dice.forEach(die => {
+          const roll = Math.floor(Math.random()* 6) + 1;
+          die.textContent=roll;
+          die.classList.remove("rolling");
+          totalValue +=roll;
+        });
+        total.textContent=`total: ${totalValue}`;
+        rollBtn.disabled= false;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

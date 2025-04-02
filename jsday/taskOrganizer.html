@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drag and Drop Task Organizer</title>
+  <style>
+    body{
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+      background-color: #dfe4ea;
+    }
+
+    .container{
+      text-align: center;
+      max-width: 800px;
+      padding: 20px;
+    }
+    h1{
+      color: #2d3436;
+    }
+
+    .form{
+      margin: 20px 0;
+    }
+
+    input{
+      font-size: 16px;
+      padding: 8px;
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+      width: 200px;
+    }
+
+    button{
+      padding: 8px 16px;
+      font-size: 16px;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #00b894;
+    }
+
+    button:hover{
+      background-color: #009975;
+    }
+
+    .column{
+      flex: 1;
+      background: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h2{
+      color: #2d3436;
+      margin: 0 0 10px;
+    }
+
+    .task-list{
+      min-height: 100px;
+      padding: 5px;
+      border-radius: 5px;
+      border: 2px dashed #ced4da;
+    }
+
+    .task{
+      padding: 10px;
+      margin: 5px 0;
+      cursor: move;
+      user-select: none;
+      border-radius: 5px;
+      background-color: #f1f2f6;
+    }
+
+    .task.dragging{
+      opacity: 0.5;
+    }
+
+    .task-list.drag-over{
+      border-color: #00b894;
+      background-color: #e6fffa;
+    
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Drag And Drop Task Organizer</h1>
+    <div class="form">
+      <input type="text" name="text" id="textInput" placeholder="Enter a new task.....">
+      <button id="addBtn">Add Task</button>
+    </div>
+    <div class="columns">
+      <div id="todoColomns" class="colomn">
+        <h2>To Do</h2>
+        <div class="task-list" data-column="todo"></div>
+      </div>
+      <div id="doneColomns" class="column">
+        <h2>Done</h2>
+        <div class="task-list" data-column="done"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const textInput = document.getElementById("textInput");
+    const addBtn = document.getElementById("addBtn");
+    const todoList = document.querySelector('[data-column="todo"]');
+    const doneList = document.querySelector('[data-column="done"]');
+   
+    addBtn.addEventListener('click', ()=> {
+      const taskText=textInput.value.trim();
+      if(!taskText){
+        alert("Please Enter A Text");
+        return;
+      }
+
+      const text = createTask(taskText);
+      todoList.appendChild(text);
+      textInput.value="";
+    });
+
+    function createTask(text){
+      const task = document.createElement("div");
+      task.className="task";
+      task.textContent=text;
+      task.draggable=true;
+
+      task.addEventListener("dragstart", ()=>{
+        task.classList.add("dragging");
+      });
+
+      task.addEventListener("dragend", ()=> {
+        task.classList.remove("dragging");
+      });
+
+      return task;
+    }
+
+    const taskLists=[todoList, doneList];
+
+    taskLists.forEach(list=> {
+      list.addEventListener("dragover", (e)=> {
+        e.preventDefault();
+        list.classList.add('drag-over');
+      });
+
+      list.addEventListener("dragleave", ()=> {
+        list.classList.remove('drag-over');
+      });
+
+      list.addEventListener("drop", (e)=> {
+        e.preventDefault();
+       const task = document.querySelector(".dragging");
+       if (task){
+        list.appendChild(task);
+        list.classList.remove("drag-over");
+       }
+      });
+    })
+    
+  </script>
+</body>
+</html>

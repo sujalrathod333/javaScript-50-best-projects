@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simon says Game</title>
+  <style>
+    body{
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #2f3542;
+      color: #fff;
+    }
+
+    .container{
+      text-align: center;
+    }
+
+    h1{
+      color: #ecf0f1;
+    }
+
+    p{
+      font-size: 18px;
+    }
+
+    #startBtn{
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #00b894;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: black;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+
+    #startBtn:hover{
+      background-color: #009975;
+    }
+
+    .game-board{
+      display: grid;
+      grid-template-columns: repeat(2, 120px);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .button{
+      width: 120px;
+      height: 120px;
+      border-radius: 10px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .button.active{
+      opacity: 1;
+    }
+
+    .red { background-color: #ff6b6b;}
+    .green { background-color: #00cc99;}
+    .blue { background-color: #4dabf7;}
+    .yellow { background-color: #ffeb3b;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Simon Says Game</h1>
+    <p>Score: <span id="score">0</span></p>
+    <button id="startBtn">Start Game</button>
+    <div class="game-board">
+      <div class="button red" data-color="red"></div>
+      <div class="button green" data-color="green"></div>
+      <div class="button blue" data-color="blue"></div>
+      <div class="button yellow" data-color="yellow"></div>
+    </div>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById("startBtn");
+    const scoreDisplay = document.getElementById("score");
+    const buttons = document.querySelectorAll(".button");
+
+    let sequence = [];
+    let playerSequence = [];
+    let score = 0;
+    let isPlayerTurn = false;
+
+   
+    const sounds = {
+   red: new Audio('https://www.soundjay.com/button/beep-07.wav'),
+   green: new Audio('https://www.soundjay.com/button/beep-08b.wav'),
+   blue: new Audio('https://www.soundjay.com/button/beep-09.wav'),
+   yellow: new Audio('https://www.soundjay.com/button/beep-10.wav')
+};
+
+
+    startBtn.addEventListener("click", startGame);
+
+    function startGame(){
+      sequence = [];
+      playerSequence = [];
+      score = 0;
+      scoreDisplay.textContent = score;
+      startBtn.disabled = true;
+      nextRound();
+    }
+
+    function nextRound(){
+      playerSequence = [];
+      isPlayerTurn = false;
+      score++;
+      scoreDisplay.textContent = score;
+      const randomColor = ['red', 'green', 'blue', 'yellow'][Math.floor(Math.random() * 4)];
+      sequence.push(randomColor);
+
+      playSequence();
+    }
+
+    function playSequence(){
+     let i = 0;
+     const interval = setInterval(() => {
+      if(i >= sequence.length){
+        clearInterval(interval);
+        isPlayerTurn = true;
+        return;
+      }
+
+      const color = sequence[i];
+      const button = document.querySelector(`[data-color="${color}"]`);
+      activateButton(button);
+      i++;
+     }, 1000)
+    }
+
+    function activateButton(button){
+      button.classList.add("active");
+      sounds[button.dataset.color].currentTime = 0;
+      sounds[button.dataset.color].play();
+      setTimeout(() => button.classList.remove("active"), 500);
+    }
+
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        if(!isPlayerTurn) return;
+
+        const color = button.dataset.color;
+        playerSequence.push(color);
+        activateButton(button);
+
+        if(!checkSequence()){
+          endgame();
+          return;
+        }
+
+        if(playerSequence.length === sequence.length){
+          setTimeout(nextRound, 1000);
+        }
+      });
+    });
+
+    function checkSequence(){
+      for(let i = 0; i < playerSequence.length; i++){
+        if(playerSequence[i] !== sequence[i]){
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function endgame(){
+      alert(`Game Over! Score: ${score}`);
+      startBtn.disabled = false;
+      isPlayerTurn = false;
+    }
+  </script>
+</body>
+</html>

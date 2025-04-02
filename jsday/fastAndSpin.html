@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fast And Spin</title>
+  <style>
+    body {
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #4674f3;
+    }
+
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      width: 400px;
+      text-align: center;
+    }
+
+    button {
+      border: none;
+      border-radius: 5px;
+      background: #6518f3;
+      padding: 10px;
+      margin: 5px;
+      color: rgb(242, 247, 247);
+      font-size: 17px;
+      cursor: pointer;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    button:hover {
+      background: #4b21be;
+    }
+
+    button:active {
+      background: #162670;
+    }
+
+    #gameStatus {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #007bff;
+    }
+    #reset {
+      display: none;
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Fast And Spin</h1>
+    <div>Balls Bowled: <span id="ballsBowled">0</span></div>
+    <div>Runs Given: <span id="runsGiven">0</span></div>
+    <div>Wickets Taken: <span id="wicketsTaken">0</span></div>
+    <button id="fast">Fast</button>
+    <button id="spin">Spin</button>
+    <button id="reset">Play Again</button>
+    <div id="gameStatus">Choose your delivery!</div>
+  </div>
+
+  <script>
+    let ballsBowled = 0;
+    let runsGiven = 0;
+    let wicketsTaken = 0;
+
+    document.getElementById("fast").addEventListener("click", () => bowl("fast"));
+    document.getElementById("spin").addEventListener("click", () => bowl("spin"));
+    document.getElementById("reset").addEventListener("click", resetGame);
+
+    function bowl(type) {
+      if (ballsBowled >= 6) {
+        updateStatus("Over complete! Game Over.");
+        disableButtons();
+        return;
+      }
+
+      const outcome = Math.random();
+
+      if (type === "fast") {
+        if (outcome < 0.2) {
+          wicketsTaken++;
+          updateStatus("You took a wicket!");
+        } else if (outcome < 0.8) {
+          const runs = Math.floor(Math.random() * 5); 
+          runsGiven += runs;
+          updateStatus(`You conceded ${runs} runs.`);
+        } else {
+          updateStatus("Dot ball! Well bowled.");
+        }
+      } else if (type === "spin") {
+        if (outcome < 0.25) {
+          wicketsTaken++;
+          updateStatus("You took a wicket!");
+        } else if (outcome < 0.85) {
+          const runs = Math.floor(Math.random() * 7);
+          runsGiven += runs;
+          updateStatus(`You conceded ${runs} runs.`);
+        } else {
+          updateStatus("Dot ball! Nice delivery.");
+        }
+      }
+
+      ballsBowled++;
+      updateGameBoard();
+
+      if (ballsBowled === 6) {
+        updateStatus("Over complete! Game Over.");
+        disableButtons();
+      }
+    }
+
+    function updateGameBoard() {
+      document.getElementById("ballsBowled").innerText = ballsBowled;
+      document.getElementById("runsGiven").innerText = runsGiven;
+      document.getElementById("wicketsTaken").innerText = wicketsTaken;
+    }
+
+    function updateStatus(message) {
+      document.getElementById("gameStatus").textContent = message;
+    }
+
+    function disableButtons() {
+      document.getElementById("fast").disabled = true;
+      document.getElementById("spin").disabled = true;
+      document.getElementById("reset").style.display = "inline-block";
+    }
+
+    function resetGame() {
+      ballsBowled = 0;
+      runsGiven = 0;
+      wicketsTaken = 0;
+      updateGameBoard();
+      updateStatus("Choose your delivery!");
+      
+      document.getElementById("fast").disabled = false;
+      document.getElementById("spin").disabled = false;
+      document.getElementById("reset").style.display = "none";
+    }
+  </script>
+</body>
+</html>
