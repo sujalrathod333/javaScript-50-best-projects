@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Splitter</title>
+  <style>
+    body{
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #e9ecef;
+      font-family: 'Courier New', Courier, monospace;
+    }
+     .container{
+      text-align: center;
+      max-width: 400px;
+      padding: 20px;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1)
+     }
+
+     h1{
+      color: #2d3435;
+      margin-bottom: 20px;
+     }
+
+     .input-group{
+      text-align: left;
+      margin: 15px 0;
+     }
+
+     label{
+      display: block;
+      color: #2d3435;
+      font-size: 16px;
+      margin-bottom: 5px;
+     }
+
+     input{
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+      border-radius: 5px;
+      border: 1px solid #ced4da;
+     }
+
+
+     .tip-buttons{
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+
+      & label{
+        margin-top: 7px;
+      }
+     }
+
+     .tip-btn{
+      padding: 8px 16px;
+      background-color: #0984e3;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      color: white;
+      cursor: pointer;
+     }
+
+     .tip-btn.active{
+      background-color: #00b894;
+     }
+
+     .tip-btn:hover{
+      background-color: #0652dd;
+     }
+
+     .tip-btn.active:hover{
+      background-color: #009975;
+     }
+
+     #customTip{
+      width: 100px;
+     }
+     
+     .output{
+      margin: 20px 0;
+      font-size: 16px;
+      color: #2d3435;
+     }
+
+     .reset-btn{
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #e55039;
+      color: white;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+     }
+
+     .reset-btn:hover{
+      background-color: #b33939;
+     }
+
+     .error{
+      color: #e55039;
+      font-size: 14px;
+      margin-top: 10px;
+     }
+
+     @media (max-width: 400px) {
+      .container{
+        width: 90%;
+      }
+     }
+
+
+  </style>
+</head>
+<body><div class="container">
+  <h1>Expense Splitter</h1>
+  <div class="input-group">
+    <label for="billAmount">Bill Amount Rs.</label>
+    <input type="number" id="billAmount" placeholder="0.00" step="1" min="0">
+  </div>
+  <div class="input-group">
+    <div class="tip-buttons">
+    <label>Bill Percentage</label>
+    <button class="tip-btn" data-tip="10">10%</button>
+    <button class="tip-btn" data-tip="15">15%</button>
+    <button class="tip-btn" data-tip="20">20%</button>
+    <input type="number" id="customTip" placeholder="Custom" min="0">
+  </div>
+  </div>
+  <div class="input-group">
+    <label for="peopleCount">Number Of People</label>
+    <input type="number" id="peopleCount" placeholder="1" min="1" value="1">
+  </div>
+  <div class="output">
+    <p>Total Amount: Rs<span id="totalAmount">0.00</span></p>
+    <p>Per Person: Rs<span id="perPerson">0.00</span></p>
+  </div>
+  <button id="resetBtn" class="reset-btn">Reset</button>
+  <p id="error" class="error"></p>
+</div>
+  <script>
+    const billAmountInput=document.getElementById('billAmount');
+    const tipButtons=document.querySelectorAll('.tip-btn');
+    const customTipInput=document.getElementById('customTip');
+    const peopleCountInput=document.getElementById('peopleCount');
+    const totalAmountDisplay=document.getElementById('totalAmount');
+    const perPersonDisplay=document.getElementById('perPerson');
+    const resetBtn=document.getElementById('resetBtn');
+    const errorDisplay=document.getElementById('error');
+
+
+    let bill=0;
+    let tipPercent=0;
+    let people=0;
+
+    function calculate(){
+      const bill=parseFloat(billAmountInput.value) || 0;
+      const people=parseInt(peopleCountInput.value) || 1;
+
+      if (bill < 0 || people < 1) {
+        errorDisplay.textContent='Please enter a valid';
+        totalAmountDisplay.textContent='0.00';
+        perPersonDisplay.textContent='0.00';
+        return;
+      }
+
+      errorDisplay.textContent='';
+
+      const tipAmount= bill * (tipPercent / 100);
+      const total = bill + tipAmount;
+      const perPerson= total / people;
+
+      totalAmountDisplay.textContent= total.toFixed(2);
+      perPersonDisplay.textContent= perPerson.toFixed(2);
+    }
+
+    billAmountInput.addEventListener('input', calculate);
+
+    tipButtons.forEach(btn => {
+      btn.addEventListener("click", ()=> {
+        tipButtons.forEach( b => b.classList.remove('active'));
+        btn.classList.add('active');
+        tipPercent=parseInt(btn.dataset.tip);
+        customTipInput.value='';
+        calculate();
+      });
+    });
+
+
+    customTipInput.addEventListener("input", ()=> {
+      tipPercent=parseInt(customTipInput.value) || 0;
+      tipButtons.forEach(b => b.classList.remove('active'));
+      calculate();
+    });
+
+    peopleCountInput.addEventListener('input', calculate);
+
+    resetBtn.addEventListener('click', ()=> {
+      billAmountInput.value='';
+      customTipInput.value='';
+      errorDisplay.textContent='';
+      totalAmountDisplay.textContent='0.00';
+      perPersonDisplay.textContent='0.00';
+      peopleCountInput.value='1';
+      bill=0;
+      people=0;
+      tipPercent=0;
+      tipButtons.forEach(b => b.classList.remove('active'));
+    });
+
+    calculate();
+  </script>
+</body>
+</html>
