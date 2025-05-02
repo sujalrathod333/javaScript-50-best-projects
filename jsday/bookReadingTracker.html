@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Reading Tracker</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: #e9ecef;
+        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+          "Lucida Sans", Arial, sans-serif;
+      }
+
+      .container {
+        text-align: center;
+        padding: 20px;
+        max-width: 800px;
+        width: 100%;
+      }
+
+      h1 {
+        color: #2d3436;
+      }
+
+      .summary {
+        margin: 20px 0;
+        font-size: 18px;
+        color: #2d3436;
+      }
+
+      .controls {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      input {
+        padding: 8px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+      }
+
+      #searchInput {
+        width: 200px;
+      }
+
+      button {
+        padding: 8px 16px;
+        background-color: #0984e3;
+        color: white;
+        border-radius: 5px;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 5px;
+
+        &:hover {
+          background-color: #0652dd;
+        }
+      }
+
+      .form {
+        background: #fff;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+      .form.hidden {
+        display: none;
+      }
+      .form input {
+        width: 100%;
+        margin: 5px 0;
+      }
+
+      .form-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      #saveBtn {
+        background-color: #00b894;
+        &:hover {
+          background-color: #009975;
+        }
+      }
+
+      #cancelBtn {
+        background-color: #e55039;
+        &:hover {
+          background-color: #b33939;
+        }
+      }
+
+      .book-card button {
+        background-color: #e55039;
+        padding: 5px 10px;
+        margin: 0 5px;
+        &:hover {
+          background-color: #b33939;
+        }
+      }
+
+      .book-list {
+        margin: 20px 0;
+      }
+
+      .book-card {
+        background: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        margin-bottom: 15px;
+        text-align: left;
+
+        & h3 {
+          margin: 0 0 5px;
+          color: #2d3436;
+        }
+
+        & p {
+          margin: 0 0 10px;
+          color: #4b6584;
+        }
+      }
+
+      .progress-bar {
+        background: #e9ecef;
+        border-radius: 5px;
+        height: 20px;
+        overflow: hidden;
+        margin: 10px;
+      }
+
+      .progress-fill {
+        background: #00b894;
+        height: 100%;
+        transition: width 0.3s ease;
+      }
+
+      .book-card button:first-child {
+        background-color: #0984e3;
+
+        &:hover {
+          background-color: #0652dd;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .controls {
+          flex-direction: column;
+          align-items: center;
+        }
+        #searchInput {
+          width: 100%;
+        }
+        .book-card {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Book Reading Tracker</h1>
+      <div class="summary">
+        <p>Total Pages Read: <span id="totalPages">0</span></p>
+      </div>
+      <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search Book..." />
+        <button id="addBtn">Add Book</button>
+      </div>
+      <div class="form hidden" id="bookForm">
+        <input type="text" id="bookTitle" placeholder="Book Title" />
+        <input type="text" id="bookAuthor" placeholder="Book Author" />
+        <input
+          type="number"
+          id="totalPagesInput"
+          placeholder="Total pages"
+          min="1"
+        />
+        <input
+          type="number"
+          id="currentPagesInput"
+          placeholder="Current pages"
+          min="0"
+        />
+        <div class="form-buttons">
+          <button id="saveBtn">Save</button>
+          <button id="cancelBtn">Cancel</button>
+        </div>
+      </div>
+      <div class="book-list" id="bookList"></div>
+    </div>
+    <script>
+      const searchInput = document.getElementById("searchInput");
+      const addBtn = document.getElementById("addBtn");
+      const totalPages = document.getElementById("totalPages");
+      const bookForm = document.getElementById("bookForm");
+      const bookTitle = document.getElementById("bookTitle");
+      const bookAuthor = document.getElementById("bookAuthor");
+      const bookList = document.getElementById("bookList");
+      const saveBtn = document.getElementById("saveBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const totalPagesInput = document.getElementById("totalPagesInput");
+      const currentPagesInput = document.getElementById("currentPagesInput");
+
+      let books = JSON.parse(localStorage.getItem("books")) || [];
+      let editingId = null;
+
+      function renderBooks(filter = "") {
+        bookList.innerHTML = "";
+        const filteredBooks =
+          books.filter((book) =>
+            book.title.toLowerCase().includes(filter.toLowerCase())
+          ) ||
+          books.filter((book) =>
+            book.author.toLowerCase().includes(filter.toLowerCase())
+          );
+
+        filteredBooks.forEach((book) => {
+          const progress = book.totalPages
+            ? ((book.currentPages / book.totalPages) * 100).toFixed(1)
+            : 0;
+          const div = document.createElement("div");
+          div.className = "book-card";
+          div.innerHTML = `
+            <h3>${book.title || "untitled"}</h3>
+             <p>Author: ${book.author || "unknown"}</p>
+              <p>Pages: ${book.currentPages} / ${
+            book.totalPages
+          } pages (${progress}%)</p>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${progress}%"></div>
+                </div>
+                <button onclick="editBook(${book.id})">Edit</button>
+                 <button onclick="deleteBook(${book.id})">Delete</button>
+            `;
+          bookList.appendChild(div);
+        });
+        updateSummary();
+      }
+
+      function updateSummary() {
+        const total = books.reduce((sum, book) => sum + book.currentPages, 0);
+        totalPages.textContent = total;
+        localStorage.setItem("books", JSON.stringify(books));
+      }
+
+      function openModal(id = null) {
+        editingId = id;
+        if (id) {
+          const book = books.find((b) => b.id === id);
+          bookTitle.value = book.title;
+          bookAuthor.value = book.author;
+          currentPagesInput.value = book.currentPages;
+          totalPagesInput.value = book.totalPages;
+        } else {
+          bookAuthor.value = "";
+          bookTitle.value = "";
+          currentPagesInput.value = "";
+          totalPagesInput.value = "";
+        }
+        bookForm.classList.remove("hidden");
+      }
+
+      addBtn.addEventListener("click", () => openModal());
+
+      saveBtn.addEventListener("click", () => {
+        const title = bookTitle.value.trim();
+        const author = bookAuthor.value.trim();
+        const currentPages = parseInt(currentPagesInput.value) || 0;
+        const totalPages = parseInt(totalPagesInput.value);
+
+        if (
+          !title ||
+          !author ||
+          currentPages < 0 ||
+          totalPages < 1 ||
+          currentPages > totalPages
+        ) {
+          alert(
+            "Please enter valid title, author and current page(0 to total pages!"
+          );
+          return;
+        }
+
+        if (editingId) {
+          books = books.map((book) =>
+            book.id === editingId
+              ? { ...book, title, author, totalPages, currentPages }
+              : book
+          );
+        } else {
+          books.push({
+            id: Date.now(),
+            title,
+            author,
+            totalPages,
+            currentPages,
+          });
+        }
+        localStorage.setItem("books", JSON.stringify(books));
+        renderBooks(searchInput.value);
+        bookForm.classList.add("hidden");
+      });
+
+      cancelBtn.addEventListener("click", () => {
+        bookForm.classList.add("hidden");
+      });
+
+      function editBook(id) {
+        openModal(id);
+      }
+
+      function deleteBook(id) {
+        books = books.filter((book) => book.id !== id);
+        localStorage.setItem("books", JSON.stringify(books));
+        renderBooks(searchInput.value);
+      }
+
+      searchInput.addEventListener("input", () => {
+        renderBooks(searchInput.value);
+      });
+
+      renderBooks();
+
+      bookForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gratitude Journal</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: #f1f2f6;
+        font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+          "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+      }
+
+      .container {
+        text-align: center;
+        padding: 20px;
+        max-width: 800px;
+        width: 100%;
+      }
+
+      h1 {
+        color: #2d3436;
+      }
+
+      .controls {
+        margin: 20px 0;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      input,
+      textarea {
+        padding: 8px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+      }
+
+      #searchInput {
+        width: 300px;
+      }
+
+      #dateFilter {
+        width: 150px;
+      }
+
+      button {
+        padding: 8px 20px;
+        font-size: 16px;
+        background-color: #0984e3;
+        color: white;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0652dd;
+      }
+
+      #randomBtn {
+        background-color: #e55039;
+      }
+      #randomBtn:hover {
+        background-color: #b33939;
+      }
+
+      .form {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+        & input,
+        textarea {
+          width: 100%;
+          margin: 5px 0;
+        }
+
+        #entryDesc {
+          height: 100px;
+        }
+      }
+
+      .form.hidden {
+        display: none;
+      }
+
+      .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      #saveBtn {
+        background-color: #00b894;
+      }
+
+      #saveBtn:hover {
+        background-color: #009975;
+      }
+
+      #cancelBtn {
+        background-color: #e55039;
+      }
+
+      #cancelBtn:hover {
+        background-color: #b33939;
+      }
+
+      .entry-list {
+        margin: 20px 0;
+        position: relative;
+      }
+
+      .entry-list::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: #ced4da;
+        transform: translateX(-50%);
+      }
+
+      .entry-card {
+        background: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+        width: 45%;
+        position: relative;
+
+        &.left {
+          margin-right: 55%;
+        }
+
+        &.right {
+          margin-left: 55%;
+        }
+      }
+
+      .entry-card::before {
+        content: "";
+        position: absolute;
+        top: 20px;
+        width: 10px;
+        border-radius: 50%;
+        background: #0984e3;
+        height: 10px;
+      }
+
+      .entry-card.left::before {
+        right: -20px;
+      }
+
+      .entry-card.right::before {
+        left: -20px;
+      }
+
+      .entry-card h3 {
+        margin: 0 0 10px;
+        color: #2d3436;
+      }
+
+      .entry-card p {
+        margin: 0 0 5px;
+        color: #4b6584;
+      }
+
+      .entry-card button {
+        background-color: #e55039;
+        padding: 5px 10px;
+        margin: 0 5px;
+      }
+
+      .entry-card button:first-child {
+        background-color: #0984e3;
+      }
+      .entry-card button:first-child:hover {
+        background-color: #0652dd;
+      }
+
+      .entry-card button:hover {
+        background-color: #b33939;
+      }
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.5);
+      }
+
+      .modal.hidden {
+        display: none;
+      }
+
+      .modal-content {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 500px;
+      }
+
+      #closeRandomBtn {
+        background-color: #e55039;
+      }
+
+      #closeRandomBtn:hover {
+        background-color: #b33939;
+      }
+
+      @media (max-width: 600px) {
+        .controls {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        #searchInput,
+        #dateFilter {
+          width: 100%;
+        }
+
+        .entry-list::before {
+          left: 20px;
+        }
+
+        .entry-card {
+          width: 80%;
+          margin: 10px 0 10px 40px !important;
+        }
+        .entry-card::before {
+          left: -15px !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Gratitude Journal</h1>
+      <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search entries..." />
+        <input type="date" placeholder="Filter by date..." id="dateFilter" />
+        <button id="addBtn">Add Entry</button>
+        <button id="randomBtn">Random Entry</button>
+      </div>
+      <div class="form hidden" id="entryForm">
+        <input type="date" id="entryDate" />
+        <input type="text" id="entryTitle" placeholder="Title" />
+        <textarea
+          id="entryDesc"
+          placeholder="What are you grateful for?"
+        ></textarea>
+        <div class="form-buttons">
+          <button id="saveBtn">Save</button>
+          <button id="cancelBtn">Cancel</button>
+        </div>
+      </div>
+      <div class="entryList" id="entry-list"></div>
+      <div class="modal hidden" id="randomModal">
+        <div class="modal-content">
+          <h2>random Gratitude Memory</h2>
+          <p><strong>Date:</strong> <span id="randomDate"></span></p>
+          <p><strong>Title:</strong> <span id="randomTitle"></span></p>
+          <p><strong>Description:</strong> <span id="randomDesc"></span></p>
+          <button id="closeRandomBtn">Close</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      const searchInput = document.getElementById("searchInput");
+      const dateFilter = document.getElementById("dateFilter");
+      const addBtn = document.getElementById("addBtn");
+      const randomBtn = document.getElementById("randomBtn");
+      const entryForm = document.getElementById("entryForm");
+      const entryTitle = document.getElementById("entryTitle");
+      const entryDate = document.getElementById("entryDate");
+      const entryDesc = document.getElementById("entryDesc");
+      const entryList = document.getElementById("entry-list");
+      const saveBtn = document.getElementById("saveBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const randomDate = document.getElementById("randomDate");
+      const randomTitle = document.getElementById("randomTitle");
+      const randomDesc = document.getElementById("randomDesc");
+      const closeRandomBtn = document.getElementById("closeRandomBtn");
+      const randomModal = document.getElementById('randomModal');
+
+      let entries = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
+      let editingId = null;
+
+      function renderEntries(Search = "", date = "") {
+        entryList.innerHTML = "";
+        const filteredEntries = entries
+          .filter((entry) =>
+            entry.title.toLowerCase().includes(Search.toLowerCase())
+          )
+          .filter((entry) => !date || entry.date === date)
+          .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        filteredEntries.forEach((entry, index) => {
+          const div = document.createElement("div");
+          div.className = `entry-card ${index % 2 === 0 ? "left" : "right"}`;
+          div.innerHTML = `
+           <h3>${entry.title || "Untitled"}</h3>
+           <p>${entry.date}</p>
+           <p>${entry.description || "No Description"}</p>
+           <button onclick="editEntry(${entry.id})">Edit</button>
+           <button onclick="deleteEntry(${entry.id})">Delete</button>
+           `;
+          entryList.appendChild(div);
+        });
+      }
+
+      function openForm(id = null) {
+        editingId = id;
+        if (id) {
+          const entry = entries.find((e) => e.id === id);
+          entryDate.value = entry.date;
+          entryDesc.value = entry.description;
+          entryTitle.value = entry.title;
+        } else {
+          entryTitle.value = "";
+          entryDate.value = "";
+          entryDesc.value = "";
+        }
+        entryForm.classList.remove("hidden");
+      }
+
+      addBtn.addEventListener("click", () => openForm());
+
+      randomBtn.addEventListener("click", () => {
+        if (entries.length===0) {
+          alert('No entries to show!')
+          return;
+        }
+
+        const randomEntry = entries[Math.floor(Math.random() * entries.length)];
+        randomDate.textContent=randomEntry.date;
+        randomTitle.textContent=randomEntry.title || 'Untitled';
+        randomDesc.textContent=randomEntry.description || 'No  description';
+        randomModal.classList.remove('hidden');
+      });
+
+      saveBtn.addEventListener("click", () => {
+        const date = entryDate.value;
+        const title = entryTitle.value.trim();
+        const description = entryDesc.value.trim();
+
+        if (!date || !title) {
+          alert("Please enter a date and title!");
+          return;
+        }
+
+        if (editingId) {
+          entries = entries.map((entry) =>
+            entry.id === editingId
+              ? { ...entry, title, date, description }
+              : entry
+          );
+        } else {
+          entries.push({
+            id: Date.now(),
+            date,
+            title,
+            description
+          });
+        }
+        localStorage.setItem('gratitudeEntries', JSON.stringify(entries));
+        renderEntries(searchInput.value);
+        entryForm.classList.add('hidden');
+      });
+
+      cancelBtn.addEventListener("click", () => {
+        entryForm.classList.add('hidden');
+      });
+
+      function editEntry(id){
+        openForm(id);
+      }
+
+      function deleteEntry(id){
+        entries=entries.filter(entry=> entry.id !== id);
+         localStorage.setItem('gratitudeEntries', JSON.stringify(entries));
+        renderEntries(searchInput.value, dateFilter.value);
+
+      }
+
+      closeRandomBtn.addEventListener("click", () => {
+         randomModal.classList.add('hidden');
+      });
+
+      searchInput.addEventListener("input", () => {
+        renderEntries(searchInput.value);
+      });
+
+      
+      dateFilter.addEventListener("input", () => {
+        renderEntries(searchInput.value, dateFilter.value);
+      });
+
+      renderEntries();
+    </script>
+  </body>
+</html>

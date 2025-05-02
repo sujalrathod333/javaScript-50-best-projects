@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Goal Tracker</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: #e9ecef;
+        font-family: "Trebuchet MS", sans-serif;
+      }
+
+      .container {
+        text-align: center;
+        padding: 20px;
+        max-width: 800px;
+        width: 100%;
+      }
+
+      h1 {
+        color: #2d3436;
+      }
+
+      .summary {
+        margin: 20px 0;
+        font-size: 18px;
+        color: #2d3436;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      input,
+      select {
+        padding: 8px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+      }
+
+      #searchInput,
+      #sortBy {
+        width: 200px;
+      }
+
+      button {
+        padding: 8px 16px;
+        background-color: #0984e3;
+        color: white;
+        border-radius: 5px;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 5px;
+      }
+
+      button:hover {
+        background-color: #0652dd;
+      }
+
+      .form {
+        background: #fff;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .form.hidden {
+        display: none;
+      }
+
+      .form input,
+      .form select {
+        width: 100%;
+        margin: 5px 0;
+      }
+
+      .form-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      #saveBtn {
+        background-color: #00b894;
+      }
+
+      #saveBtn:hover {
+        background-color: #009975;
+      }
+
+      #cancelBtn {
+        background-color: #e55039;
+      }
+
+      #cancelBtn:hover {
+        background-color: #b33939;
+      }
+
+      .goal-card button {
+        padding: 5px 10px;
+        margin: 0 5px;
+      }
+
+      .goal-card {
+        background: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        margin-bottom: 15px;
+        text-align: left;
+      }
+
+      .goal-card h3 {
+        margin: 0 0 5px;
+        color: #2d3436;
+      }
+
+      .goal-card p {
+        margin: 0 0 10px;
+        color: #4b6584;
+      }
+
+      .progress-bar {
+        background: #e9ecef;
+        border-radius: 5px;
+        height: 20px;
+        overflow: hidden;
+        margin: 10px 0;
+      }
+
+      .progress-fill {
+        background: #00b894;
+        height: 100%;
+        transition: width 0.3s ease;
+      }
+
+      .expired {
+        color: #d63031;
+        font-weight: bold;
+      }
+
+      .complete {
+        border-left: 5px solid #00b894;
+      }
+
+      @media (max-width: 600px) {
+        .controls {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        #searchInput,
+        #sortBy {
+          width: 100%;
+        }
+
+        .goal-card {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Goal Tracker</h1>
+      <div class="summary">
+        <p>Completed Goal: <span id="completedGoals">0</span> / <span id="totalGoals">0</span></p>
+      </div>
+      <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search Goals..." />
+        <select id="sortBy">
+          <option value="">Sort By</option>
+          <option value="date">Due Date</option>
+          <option value="progress">Progress</option>
+        </select>
+        <button id="addBtn">Add Goal</button>
+      </div>
+
+      <div class="form hidden" id="goalForm">
+        <input type="text" id="goalTitle" placeholder="Goal Title" />
+        <input type="date" id="targetDate" />
+        <label for="progressInput">Progress: <span id="progressDisplay">0%</span></label>
+        <input type="range" id="progressInput" min="0" max="100" step="1" />
+        <div class="form-buttons">
+          <button id="saveBtn">Save</button>
+          <button id="cancelBtn">Cancel</button>
+        </div>
+      </div>
+
+      <div class="goal-list" id="goalList"></div>
+    </div>
+
+    <script>
+      const searchInput = document.getElementById("searchInput");
+      const sortBy = document.getElementById("sortBy");
+      const addBtn = document.getElementById("addBtn");
+      const totalGoals = document.getElementById("totalGoals");
+      const completedGoals = document.getElementById("completedGoals");
+      const goalForm = document.getElementById("goalForm");
+      const goalTitle = document.getElementById("goalTitle");
+      const targetDate = document.getElementById("targetDate");
+      const progressInput = document.getElementById("progressInput");
+      const progressDisplay = document.getElementById("progressDisplay");
+      const goalList = document.getElementById("goalList");
+      const saveBtn = document.getElementById("saveBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+
+      let goals = JSON.parse(localStorage.getItem("goals")) || [];
+      let editingId = null;
+
+      function getDaysRemaining(date) {
+        const today = new Date();
+        const target = new Date(date);
+        const diff = target - today;
+        const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+        return days >= 0 ? days : "Expired";
+      }
+
+      function renderGoals(filter = "") {
+        goalList.innerHTML = "";
+        let filtered = goals.filter(g =>
+          g.title.toLowerCase().includes(filter.toLowerCase())
+        );
+
+        const sortOption = sortBy.value;
+        if (sortOption === "date") {
+          filtered.sort((a, b) => new Date(a.targetDate) - new Date(b.targetDate));
+        } else if (sortOption === "progress") {
+          filtered.sort((a, b) => b.progress - a.progress);
+        }
+
+        filtered.forEach(goal => {
+          const daysRemaining = getDaysRemaining(goal.targetDate);
+          const div = document.createElement("div");
+          div.className = "goal-card";
+          if (goal.progress === 100) div.classList.add("complete");
+
+          div.innerHTML = `
+            <h3>${goal.title}</h3>
+            <p>Target Date: ${goal.targetDate}</p>
+            <p>Days Remaining: ${
+              daysRemaining === "Expired" ? '<span class="expired">Expired</span>' : daysRemaining
+            }</p>
+            <p>Progress: ${goal.progress}%</p>
+            <div class="progress-bar"><div class="progress-fill" style="width: ${goal.progress}%"></div></div>
+            <button onclick="editGoal(${goal.id})">Edit</button>
+            <button onclick="deleteGoal(${goal.id})">Delete</button>
+          `;
+          goalList.appendChild(div);
+        });
+
+        updateSummary();
+      }
+
+      function updateSummary() {
+        completedGoals.textContent = goals.filter(g => g.progress === 100).length;
+        totalGoals.textContent = goals.length;
+        localStorage.setItem("goals", JSON.stringify(goals));
+      }
+
+      function openModal(id = null) {
+        editingId = id;
+        if (id) {
+          const goal = goals.find(g => g.id === id);
+          goalTitle.value = goal.title;
+          targetDate.value = goal.targetDate;
+          progressInput.value = goal.progress;
+          progressDisplay.textContent = `${goal.progress}%`;
+        } else {
+          goalTitle.value = "";
+          targetDate.value = "";
+          progressInput.value = 0;
+          progressDisplay.textContent = "0%";
+        }
+        goalForm.classList.remove("hidden");
+      }
+
+      function editGoal(id) {
+        openModal(id);
+      }
+
+      function deleteGoal(id) {
+        goals = goals.filter(g => g.id !== id);
+        renderGoals(searchInput.value);
+      }
+
+      saveBtn.addEventListener("click", () => {
+        const title = goalTitle.value.trim();
+        const date = targetDate.value;
+        const progress = parseInt(progressInput.value);
+
+        if (!title || !date || isNaN(progress)) {
+          alert("Please enter valid goal data!");
+          return;
+        }
+
+        if (editingId) {
+          goals = goals.map(g =>
+            g.id === editingId ? { ...g, title, targetDate: date, progress } : g
+          );
+        } else {
+          goals.push({ id: Date.now(), title, targetDate: date, progress });
+        }
+
+        goalForm.classList.add("hidden");
+        renderGoals(searchInput.value);
+      });
+
+      cancelBtn.addEventListener("click", () => {
+        goalForm.classList.add("hidden");
+      });
+
+      searchInput.addEventListener("input", () => renderGoals(searchInput.value));
+      sortBy.addEventListener("change", () => renderGoals(searchInput.value));
+      addBtn.addEventListener("click", () => openModal());
+      progressInput.addEventListener("input", () => {
+        progressDisplay.textContent = `${progressInput.value}%`;
+      });
+
+      renderGoals();
+    </script>
+  </body>
+</html>
