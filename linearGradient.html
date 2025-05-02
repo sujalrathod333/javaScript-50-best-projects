@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Linear Gradient</title>
+  <style>
+    body{
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Georgia, 'Times New Roman', Times, serif;
+      background: linear-gradient(to right, #ff6b6b, #4ecdc4);
+      min-height: 100vh;
+      transition: background 1s ease ;
+    }
+
+    .container{
+      text-align: center;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.155);
+      border-radius: 10px;
+      margin: 20px;
+    }
+
+    h1{
+      color: #333;
+    }
+
+    .controls{
+   margin: 20px 0;
+    }
+
+    input{
+     width: 60px;
+     height: 40px;
+     margin: 0 10px;
+     border: none;
+     cursor: pointer;
+    }
+
+    button{
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+   
+    }
+
+    button:hover{
+      background-color: #555;
+    }
+
+    p{
+    font-size: 16px;
+    color: #333;
+    word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Dynamic Gradient Generator</h1>
+    <div class="controls">
+    <input type="color" id="color1" value="ff6b6b">
+    <input type="color" id="color2" value="4ecdc4">
+    <button id="randomBtn">Randomize</button>
+  </div>
+  <p id="gradientCode">Gradient: linear-gradient(to right, #ff6b6b, #4ecdc4)</p>
+  </div>
+  <script>
+    const randomBtn=document.getElementById("randomBtn");
+    const color1Input=document.getElementById("color1");
+    const color2Input=document.getElementById("color2");
+    const gradientCode=document.getElementById("gradientCode");
+
+    function updateGradient() {
+      const color1=color1Input.value;
+      const color2=color2Input.value;
+
+      const gradient=`linear-gradient(to right, ${color1}, ${color2})`;
+      document.body.style.transition = "background 1s ease";
+
+      setTimeout(() => {
+        document.body.style.background = gradient;
+      }, 50);
+
+
+      document.body.style.background=gradient;
+
+      gradientCode.textContent=`Gradient ${gradient}`;
+    }
+
+    function getRandomColor(){
+      const letters = "0123456789ABCDEF";
+      let color= "#";
+      for(let i=0; i<6; i++){
+        color += letters[Math.floor(Math.random() * 16)]
+      }
+      return color;
+    }
+
+    color1Input.addEventListener("input", updateGradient);
+    color2Input.addEventListener("input", updateGradient);
+
+    randomBtn.addEventListener("click", ()=> {
+      color1Input.value= getRandomColor();
+      color2Input.value= getRandomColor();
+      updateGradient();
+    });
+
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cricket Bowling Game</title>
+  <style>
+    body {
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #a2f346;
+    }
+
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      width: 400px;
+      text-align: center;
+    }
+
+    button {
+      border: none;
+      border-radius: 5px;
+      background: #e72424;
+      padding: 10px;
+      margin: 5px;
+      color: white;
+      font-size: 17px;
+      cursor: pointer;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    button img {
+      width: 30px;
+      height: 30px;
+    }
+
+    button:hover {
+      background: #be2121;
+    }
+
+    button:active {
+      background: #701616;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Cricket Bowling Game</h2>
+    <div>Computer's Target: <span id="targetRuns">150</span> Runs In <span id="totalOvers">10 overs</span></div>
+    <div>Computer's Score: <span id="compScore">0</span></div>
+    <div>Wickets Taken: <span id="wickets">0</span></div>
+    <div>Overs Bowled: <span id="overs">0.0</span></div>
+    <button id="bowlBtn"><img src="ball-removebg-preview.png" alt="">Bowl</button>
+    <div>Status: <span id="status">Game On</span></div>
+    <script>
+      const targetRuns = 150;
+      const totalOvers = 10;
+      let compScore = 0;
+      let wickets = 0;
+      let ballsBowled = 0;
+
+      document.getElementById("bowlBtn").addEventListener("click", bowlDelivery);
+
+      function bowlDelivery() {
+        if (wickets >= 10 || oversCompleted()) {
+          endGame("You successfully defended the target!");
+          return;
+        }
+
+        const outcome = Math.floor(Math.random() * 7);
+        ballsBowled++;
+
+        if (outcome === 0) {
+          wickets++;
+          document.getElementById("wickets").textContent = wickets;
+        } else {
+          compScore += outcome;
+          document.getElementById("compScore").textContent = compScore;
+        }
+
+        updateOversBowled();
+
+        if (compScore >= targetRuns) {
+          endGame("The computer has reached the target!");
+          return;
+        }
+
+        if (wickets === 10 || oversCompleted()) {
+          endGame("Game Over! You successfully defended the target!");
+          return;
+        }
+      }
+
+      function updateOversBowled() {
+        let overs = Math.floor(ballsBowled / 6);
+        let balls = ballsBowled % 6;
+        document.getElementById("overs").textContent = `${overs}.${balls}`;
+      }
+
+      function oversCompleted() {
+        return ballsBowled >= totalOvers * 6;
+      }
+
+      function endGame(message) {
+        document.getElementById("status").textContent = message;
+        document.getElementById("bowlBtn").disabled = true;
+      }
+
+      updateOversBowled();
+    </script>
+  </div>
+</body>
+</html>

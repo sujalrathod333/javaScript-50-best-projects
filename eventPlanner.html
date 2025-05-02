@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Event Planner</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: #f1f2f6;
+        font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+          "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+      }
+
+      .container {
+        text-align: center;
+        padding: 20px;
+        max-width: 800px;
+        width: 100%;
+      }
+
+      h1 {
+        color: #2d3436;
+      }
+
+      .controls {
+        margin: 20px 0;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      input,
+      textarea {
+        padding: 8px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+      }
+
+      #searchInput {
+        width: 200px;
+      }
+
+      #dateFilter {
+        width: 150px;
+      }
+
+      button {
+        padding: 8px 20px;
+        font-size: 16px;
+        background-color: #0984e3;
+        color: white;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0652dd;
+      }
+
+      .event-list {
+        margin: 20px 0;
+      }
+
+      .event-card {
+        background: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+
+        & p {
+          margin: 0;
+          color: #4b6584;
+        }
+      }
+
+      .event-card h3 {
+        margin: 0;
+        color: #2d3436;
+      }
+
+      .event-card button {
+        background-color: #e55039;
+        padding: 5px 10px;
+        margin-left: 5px;
+
+        &:hover {
+          background-color: #b33939;
+        }
+      }
+
+      .event-card button:first-of-type {
+        background-color: #0984e3;
+
+        &:hover {
+          background-color: #0652dd;
+        }
+      }
+
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .modal.hidden {
+        display: none;
+      }
+
+      .modal-content {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 500px;
+      }
+
+      #eventTitle,
+      #eventDate,
+      #evnetDesc {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      #evnetDesc {
+        width: 100%;
+        height: 100px;
+        margin-bottom: 10px;
+      }
+
+      #saveBtn {
+        background-color: #00b894;
+      }
+
+      #saveBtn:hover {
+        background-color: #009975;
+      }
+
+      #closeViewBtn {
+        background-color: #e55039;
+      }
+
+      #closeViewBtn:hover {
+        background-color: #b33939;
+      }
+
+      @media (max-width: 600px) {
+        .controls {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        #searchInput,
+        #dateFilter {
+          width: 100%;
+        }
+
+        .event-card {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Interactive Event Planner</h1>
+      <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search events" />
+        <input type="date" placeholder="Filter by date" id="dateFilter" />
+        <button id="addBtn">Add Event</button>
+      </div>
+      <div id="eventList" class="event-list"></div>
+      <div class="modal hidden" id="modal">
+        <div class="modal-content">
+          <h2 id="modalHeader">Add Event</h2>
+          <input type="text" id="eventTitle" placeholder="Event Title" />
+          <input type="date" id="eventDate" />
+          <input type="time" id="eventTime" />
+          <textarea id="eventDesc" placeholder="Description"></textarea>
+          <div class="modal-buttons">
+            <button id="saveBtn">Save</button>
+            <button id="cancelBtn">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div id="viewModal" class="modal hidden">
+        <div class="modal-content">
+          <h2 id="viewTitle"></h2>
+          <p><strong>Date: </strong><span id="viewDate"></span></p>
+          <p><strong>Time: </strong><span id="viewTime"></span></p>
+          <p><strong>Description: </strong><span id="viewDesc"></span></p>
+          <button id="closeViewBtn">Close</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      const searchInput = document.getElementById("searchInput");
+      const dateFilter = document.getElementById("dateFilter");
+      const addBtn = document.getElementById("addBtn");
+      const eventList = document.getElementById("eventList");
+      const modal = document.getElementById("modal");
+      const modalHeader = document.getElementById("modalHeader");
+      const eventTitle = document.getElementById("eventTitle");
+      const eventDate = document.getElementById("eventDate");
+      const eventTime = document.getElementById("eventTime");
+      const eventDesc = document.getElementById("eventDesc");
+      const saveBtn = document.getElementById("saveBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const viewModal = document.getElementById("viewModal");
+      const viewTitle = document.getElementById("viewTitle");
+      const viewDate = document.getElementById("viewDate");
+      const viewTime = document.getElementById("viewTime");
+      const viewDesc = document.getElementById("viewDesc");
+      const closeViewBtn = document.getElementById("closeViewBtn");
+
+      let events = JSON.parse(localStorage.getItem("events")) || [];
+      let editingId = null;
+
+      function renderEvents(search = "", date = "") {
+        eventList.innerHTML = "";
+        const filteredEvents = events
+          .filter((events) =>
+            events.title.toLowerCase().includes(search.toLowerCase())
+          )
+          .filter((events) => !date || events.date === date)
+          .sort(
+            (a, b) =>
+              new Date(`${a.date} ${a.time}`) - new Date(`${b.date} ${b.time}`)
+          );
+
+        filteredEvents.forEach((event) => {
+          const div = document.createElement("div");
+          div.className = "event-card";
+          div.innerHTML = `
+            <div>
+              <h3>${event.title || "Untitled"} </h3>
+              <p>${event.date} ${event.time}</p>
+              </div>
+              <div>
+                <button onclick="editEvent(${event.id})">Edit</button>
+                 <button onclick="deleteEvent(${event.id})">Delete</button>
+              </div>
+            `;
+          div.addEventListener("click", (e) => {
+            if (!e.target.tagName.match(/BUTTON/i)) viewEvent(event.id);
+          });
+          eventList.appendChild(div);
+        });
+      }
+
+      function openModal(id = null) {
+        editingId = id;
+        modalHeader.textContent = id ? "Edit Event" : "Add Event";
+        if (id) {
+          const event = events.find((e) => e.id === id);
+          eventTitle.value = event.title;
+          eventDate.value = event.date;
+          eventTime.value = event.time;
+          eventDesc.value = event.description;
+        } else {
+          eventTitle.value = "";
+          eventDate.value = "";
+          eventTime.value = "";
+          eventDesc.value = "";
+        }
+        modal.classList.remove("hidden");
+      }
+
+      addBtn.addEventListener("click", () => openModal());
+
+      saveBtn.addEventListener("click", () => {
+        const title = eventTitle.value.trim();
+        const date = eventDate.value;
+        const time = eventTime.value;
+        const description = eventDesc.value;
+
+        if (!time || !date) {
+          alert("Please enter a time and date");
+          return;
+        }
+
+        if (editingId) {
+          events = events.map((event) =>
+            event.id === editingId
+              ? { ...event, title, date, time, description }
+              : event
+          );
+        } else {
+          events.push({
+            id: Date.now(),
+            title,
+            date,
+            time,
+            description,
+          });
+        }
+
+        localStorage.setItem("events", JSON.stringify(events));
+        renderEvents(searchInput.value, dateFilter.value);
+        modal.classList.add("hidden");
+      });
+
+      cancelBtn.addEventListener("click", () => {
+        modal.classList.add("hidden");
+      });
+
+      function viewEvent(id) {
+        const event = events.find((e) => e.id === id);
+        viewTitle.textContent = event.title;
+        viewDate.textContent = event.date;
+        viewTime.textContent = event.time || "Not specified";
+        viewDesc.textContent = event.description || "No description";
+        viewModal.classList.remove("hidden");
+      }
+
+      closeViewBtn.addEventListener("click", () => {
+        viewModal.classList.add("hidden");
+      });
+
+      function editEvent(id) {
+        openModal(id);
+      }
+
+      function deleteEvent(id) {
+        events = events.filter((event) => event.id !== id);
+        localStorage.setItem("events", JSON.stringify(events));
+        renderEvents(searchInput.value, dateFilter.value);
+      }
+
+      searchInput.addEventListener("input", () => {
+        renderEvents(searchInput.value, dateFilter.value);
+      });
+
+      dateFilter.addEventListener("change", () => {
+        renderEvents(searchInput.value, dateFilter.value);
+      });
+      renderEvents();
+    </script>
+  </body>
+</html>

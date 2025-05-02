@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Mood Visualizer</title>
+  <style>
+    body{
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #dfe4ea;
+      font-family: sans-serif;
+      transition: background-color .5s ease;
+      letter-spacing: 2px;
+    }
+
+    .container{
+      text-align: center;
+      padding: 20px;
+      border-radius: 10px;
+      background:rgba(255,255,255, 0.9);
+    }
+
+    h1{
+      color: #2d3436;
+    }
+
+    .form{
+      margin: 20px 0;
+    }
+
+    input{
+      padding: 8px;
+      font-size: 16px;
+      width: 200px;
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+    }
+
+    button{
+      background-color: #0984e3;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: white;
+      font-size: 16px;
+    }
+
+    button:hover{
+      background-color: #0652dd;
+    }
+
+    .weatherDisplay{
+      margin-top: 20px;
+    }
+
+    p{
+      font-size: 18px;
+      color: #2d3436;
+    }
+
+    .emogi{
+      font-size: 60px;
+      display: block;
+      margin-top: 10px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Weather Mood Visualizer</h1>
+    <div class="form">
+      <input type="text" name="text" id="cityInput" placeholder="enter a city.....">
+      <button id="getWeatherBtn">Get Weather</button>
+    </div>
+    <div class="weatherDisplay">
+      <p id="weatherText">Enter a city to see the waether!</p>
+      <span id="moodEmogi" class="emogi"></span>
+    </div>
+  </div>
+
+  <script>
+  const cityInput=document.getElementById("cityInput");
+  const getWeatherBtn=document.getElementById("getWeatherBtn");
+  const weatherText=document.getElementById("weatherText");
+  const moodEmogi=document.getElementById("moodEmogi");
+
+function fetchWeather(city){
+  const mockData ={
+    'mumbai': {condition: 'sunny', temp: 25},
+    'navi mumbai': {condition: 'rainy', temp: 15},
+    'kolkata': {condition: 'cloudy', temp: 21},
+    'bangalore': {condition: 'clear', temp: 28}
+  };
+
+  return new Promise((resolve)=> {
+    setTimeout(()=> {
+      const data = mockData[city.toLowerCase()] || {condition: 'unknown', temp: 0};
+      resolve(data);
+    }, 500);
+  });
+}
+
+getWeatherBtn.addEventListener("click", async()=> {
+  const city=cityInput.value.trim();
+  if (!city) {
+    weatherText.textContent="Please enter a city!";
+    return;
+  }
+
+  const weatherStyles = {
+    sunny: { background: '#ffeaa7', emoji: '😊' },
+    rainy: { background: '#636e72', emoji: '☔' },
+    cloudy: { background: '#b2bec3', emoji: '☁️' },
+    clear: { background: '#74b9ff', emoji: '🌞' },
+    unknown: { background: '#dfe4ea', emoji: '❓' }
+};
+
+  weatherText.textContent="Feathing weather....."
+  const {condition, temp} = await fetchWeather(city);
+
+  weatherText.textContent=`${city}: ${condition}, ${temp} deg celcius`;
+  const style = weatherStyles[condition] || weatherStyles.unknown;
+  document.body.style.backgroundColor= style.background;
+  moodEmogi.textContent=style.emogi;
+
+  cityInput.value="";
+});
+  </script>
+</body>
+</html>

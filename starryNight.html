@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body{
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      background-color: #000;
+    }
+
+    .container{
+      text-align: center;
+    }
+
+    h1{
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    button{
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #1e90ff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 20px;
+    }
+    button:hover{
+      background-color: #1c86ee;
+    }
+    canvas {
+      border: 1px solid #fff;
+      background-color: #0a0a23;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Dynamic Starry Night</h1>
+    <button id="generateBtn">Generate stars</button>
+    <canvas id="canvas"></canvas>
+  </div>
+  <script>
+    const generateBtn=document.getElementById("generateBtn");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width=600;
+    canvas.height=400;
+
+    generateBtn.addEventListener("click", generateStarry)
+
+    function generateStarry(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const starCount = Math.floor(Math.random() * 51) + 50;
+       for (let i = 0; i < starCount; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const radius = Math.random() * 2 + 0.5;
+        const brightness=Math.random();
+
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fillStyle=`rgba(255, 255, 255, ${brightness})`;
+        ctx.fill();
+        ctx.closePath();
+       }
+    }
+  </script>
+</body>
+</html>

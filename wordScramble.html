@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Scramble Game</title>
+  <style>
+    body{
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      min-height: 100vh;
+      background-color: #f1f2f6;
+    }
+
+    .container{
+      text-align: center;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    h1{
+      color: #2f3542 ;
+    }
+
+    p{
+      font-size: 18px;
+      color: #2f3542;
+    }
+
+    .scramble-word{
+      font-size: 36px;
+      color: #4b6584;
+      margin: 20px 0;
+      letter-spacing: 5px;
+    }
+
+    input{
+     padding: 8px;
+     font-size: 16px;
+     width: 200px;
+     margin: 10px 0;
+     border: 1px solid #ced4da;
+     border-radius: 5px;
+    }
+
+    
+
+    button{
+      padding: 10px 20px;
+      font-size: 16px;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #00b894;
+      margin: 5px;
+    }
+
+    button:hover{
+      background-color: #009975;
+    }
+
+
+    #newWordBtn{
+      background-color: #0984e3;
+    }
+
+
+    #newWordBtn:hover{
+      background-color: #0652dd;
+    }
+
+    .message{
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Word Scramble Game</h1>
+    <p>Score: <span id="score">0</span></p>
+    <p>Attempts Left: <span id="attemptsLeft">3</span></p>
+    <p>Hint: <span id="hint"></span></p>
+    <div id="scrambledWord" class="scramble-word"></div>
+    <input type="text" id="guessInput" placeholder="Enter Your Guess">
+    <button id="submitBtn">Submit Guess</button>
+    <button id="newWordBtn">New Word</button>
+    <p id="message" class="message"></p>
+  </div>
+
+  <script>
+    const scoreDisplay = document.getElementById("score");
+    const hintDisplay = document.getElementById("hint");
+    const attemptsLeftDisplay = document.getElementById("attemptsLeft");
+    const scrambledWordDisplay = document.getElementById("scrambledWord");
+    const guessInput=document.getElementById("guessInput");
+    const submitBtn=document.getElementById("submitBtn");
+    const newWordBtn=document.getElementById("newWordBtn");
+    const messageDisplay=document.getElementById("message");
+
+
+    const words = [
+  { word: 'javascript', hint: 'A popular programming language' },
+  { word: 'elephant', hint: 'A large land animal with a trunk' },
+  { word: 'mountain', hint: 'A tall natural elevation' },
+  { word: 'guitar', hint: 'A stringed musical instrument' },
+  { word: 'planet', hint: 'Orbits a star in space' },
+  { word: 'oxygen', hint: 'Essential gas we breathe' },
+  { word: 'python', hint: 'A type of snake or a programming language' },
+  { word: 'galaxy', hint: 'A massive collection of stars' },
+  { word: 'pyramid', hint: 'Ancient Egyptian structure' },
+  { word: 'computer', hint: 'An electronic machine used for processing' },
+  { word: 'keyboard', hint: 'Used to type on a computer' },
+  { word: 'volcano', hint: 'Erupts with lava' },
+  { word: 'rainbow', hint: 'Appears after rain and sun' },
+  { word: 'diamond', hint: 'Precious and sparkly stone' },
+  { word: 'telescope', hint: 'Used to see faraway stars' },
+  { word: 'kangaroo', hint: 'An animal that hops and has a pouch' },
+  { word: 'microscope', hint: 'Used to see tiny things' },
+  { word: 'satellite', hint: 'Orbits Earth and helps with communication' },
+  { word: 'library', hint: 'Place full of books' },
+  { word: 'chocolate', hint: 'Sweet and made from cocoa' },
+];
+
+
+    let currentWord= "";
+    let scramble= "";
+    let score=0;
+    let attemptsLeft=3;
+
+    function scrambleWord(word){
+      const letters = word.split('');
+      for(let i =letters.length-1; i>0; i--){
+        const j= Math.floor(Math.random() *(i+1));
+        [letters[i], letters[j]]= [letters[j], letters[i]]
+      }
+      return letters.join("");
+    };
+
+    function newRound(){
+      const randomIndex= Math.floor(Math.random() * words.length);
+      currentWord = words[randomIndex].word;
+      scramble = scrambleWord(currentWord);
+      hintDisplay.textContent = words[randomIndex].hint;
+      scrambledWordDisplay.textContent= scramble;
+      attemptsLeft=3;
+      attemptsLeftDisplay.textContent=attemptsLeft;
+      guessInput.value="";
+      messageDisplay.textContent='';
+    }
+
+    submitBtn.addEventListener('click', ()=> {
+      const guess = guessInput.value.trim().toLowerCase();
+      if (!guess) {
+        messageDisplay.textContent="Please enter a guess!";
+        return;
+      }
+
+      if (guess===currentWord) {
+        score++;
+        scoreDisplay.textContent=score;
+        messageDisplay.textContent='Correct! Moving to next word...';
+        setTimeout(newRound, 2000);
+      } else {
+        attemptsLeft--;
+        attemptsLeftDisplay.textContent=attemptsLeft;
+        messageDisplay.textContent='Wrong Guess! Try Again.'
+        if (attemptsLeft===0) {
+          messageDisplay.textContent=`Game Over! the word was "${currentWord}".`;
+          setTimeout(newRound, 2000)
+        }
+      }
+      guessInput.value='';
+    });
+
+    newWordBtn.addEventListener('click', newRound);
+    newRound();
+  </script>
+</body>
+</html>

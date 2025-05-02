@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Habit Tracker</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: #e9ecef;
+        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+          "Lucida Sans", Arial, sans-serif;
+      }
+
+      .container {
+        text-align: center;
+        padding: 20px;
+        max-width: 800px;
+        width: 100%;
+      }
+
+      h1 {
+        color: #2d3436;
+      }
+
+      .summary {
+        margin: 20px 0;
+        font-size: 18px;
+        color: #2d3436;
+      }
+
+      .controls {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      input {
+        padding: 8px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+      }
+
+      #searchInput {
+        width: 200px;
+      }
+
+      button {
+        padding: 8px 16px;
+        background-color: #0984e3;
+        color: white;
+        border-radius: 5px;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 5px;
+
+        &:hover {
+          background-color: #0652dd;
+        }
+      }
+
+      .form {
+        background: #fff;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .form.hidden {
+        display: none;
+      }
+      .form input {
+        width: 100%;
+        margin: 5px 0;
+      }
+
+      .form-button {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      #saveBtn {
+        background-color: #00b894;
+        &:hover {
+          background-color: #009975;
+        }
+      }
+
+      #cancelBtn {
+        background-color: #e55039;
+        &:hover {
+          background-color: #b33939;
+        }
+      }
+
+      .habit-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+        & th,
+        td {
+          padding: 10px;
+          text-align: left;
+          border-bottom: 1px solid #ced4da;
+        }
+
+        & th {
+          background-color: #4b6585;
+          color: white;
+        }
+        & td button {
+          background-color: #e55039;
+          padding: 5px 10px;
+          margin: 0 5px;
+          &:hover {
+            background-color: #b33939;
+          }
+        }
+      }
+
+      td button:first-child {
+        background-color: #0984e3;
+
+        &:hover {
+          background-color: #0652dd;
+        }
+      }
+
+      .check-cell {
+        cursor: pointer;
+        font-size: 20px;
+      }
+
+      .check-cell.completed {
+        color: #00b984;
+      }
+
+      @media (max-width: 600px) {
+        .controls {
+          flex-direction: column;
+          align-items: center;
+        }
+        #searchInput {
+          width: 100%;
+        }
+        .habit-table {
+          font-size: 14px;
+        }
+
+        th,
+        td {
+          padding: 5px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Interactive Habit Tracker</h1>
+      <div class="summary">
+        <p>Average Success Rate: <span id="successRate">0%</span></p>
+      </div>
+      <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search habits..." />
+        <button id="addBtn">Add Habit</button>
+      </div>
+      <div class="form hidden" id="habitForm">
+        <input type="text" id="habitName" placeholder="Habit Name" />
+        <div class="form-buttons">
+          <button id="saveBtn">Save</button>
+          <button id="cancelBtn">Cancel</button>
+        </div>
+      </div>
+      <table id="habitTable" class="habit-table">
+        <thead>
+          <tr>
+            <th>Habit</th>
+            <th colspan="7">Last 7 days</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="habitList"></tbody>
+      </table>
+    </div>
+    <script>
+      const searchInput = document.getElementById("searchInput");
+      const addBtn = document.getElementById("addBtn");
+      const saveBtn = document.getElementById("saveBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const habitForm = document.getElementById("habitForm");
+      const habitName = document.getElementById("habitName");
+      const habitList = document.getElementById("habitList");
+      const successRate = document.getElementById("successRate");
+
+      let habits = JSON.parse(localStorage.getItem("habits")) || [];
+      let editingId = null;
+
+      function getLast7Days() {
+        const dates = [];
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          dates.push(date.toISOString().split("T")[0]);
+        }
+        return dates;
+      }
+
+      function renderHabits(filter = "") {
+        habitList.innerHTML = "";
+        const dates = getLast7Days();
+        const filteredHabits = habits.filter((habit) =>
+          habit.name.toLowerCase().includes(filter.toLowerCase())
+        );
+        filteredHabits.forEach((habit) => {
+          const tr = document.createElement("tr");
+          let row = `<td>${habit.name}</td>`;
+          dates.forEach((date) => {
+            const completed = habit.history[date];
+            row += `
+            <td class="check-cell ${
+              completed ? "completed" : ""
+            }" onclick="toggleHabit(${habit.id}, '${date}')">${
+              completed ? "✅" : "❌"
+            }</td>
+            `;
+          });
+
+          row += `
+          <td>
+            <button onclick="editHabit(${habit.id})">Edit</button>
+             <button onclick="deleteHabit(${habit.id})">Delete</button>
+            </td>`;
+          tr.innerHTML = row;
+          habitList.appendChild(tr);
+        });
+        updateSummary();
+      }
+
+      function updateSummary() {
+        const totalchecks = habits.reduce(
+          (sum, habit) =>
+            sum + Object.values(habit.history).filter((v) => v).length,
+          0
+        );
+
+        const totalPossible = habits.length * 7;
+        const rate = totalPossible
+          ? ((totalchecks / totalPossible) * 100).toFixed(1)
+          : 0;
+        successRate.textContent = `${rate}%`;
+        localStorage.setItem("habits", JSON.stringify(habits));
+      }
+
+      function openModal(id = null) {
+        editingId = id;
+        if (id) {
+          const habit = habits.find((h) => h.id === id);
+          habitName.value = habit.name;
+        } else {
+          habitName.value = "";
+        }
+        habitForm.classList.remove("hidden");
+      }
+
+      addBtn.addEventListener("click", () => openModal());
+
+      saveBtn.addEventListener("click", () => {
+        const name = habitName.value.trim();
+        if (!name) {
+          alert("Please enter a habit name!");
+          return;
+        }
+
+        if (editingId) {
+          habits = habits.map((habit) =>
+            habit.id === editingId ? { ...habit, name } : habit
+          );
+        } else {
+          habits.push({
+            id: Date.now(),
+            name,
+            history: {},
+          });
+        }
+        localStorage.setItem("habits", JSON.stringify(habits));
+        renderHabits(searchInput.value);
+        habitForm.classList.add("hidden");
+      });
+
+      cancelBtn.addEventListener("click", () => {
+        habitForm.classList.add("hidden");
+      });
+
+      function deleteHabit(id) {
+        habits = habits.filter((habit) => habit.id !== id);
+        localStorage.setItem("habits", JSON.stringify(habits));
+        renderHabits(searchInput.value);
+      }
+
+      function editHabit(id) {
+        openModal(id);
+      }
+
+      function toggleHabit(id, date) {
+        habits = habits.map((habit) => {
+          if (habit.id === id) {
+            const history = { ...habit.history, [date]: !habit.history[date] };
+            return { ...habit, history };
+          }
+          return habit;
+        });
+        localStorage.setItem("habits", JSON.stringify(habits));
+        renderHabits(searchInput.value);
+      }
+
+      searchInput.addEventListener("input", () => {
+        renderHabits(searchInput.value);
+      });
+
+      renderHabits();
+    </script>
+  </body>
+</html>

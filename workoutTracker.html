@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workout Tracker</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: #e9ecef;
+        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+          "Lucida Sans", Arial, sans-serif;
+      }
+
+      .container {
+        text-align: center;
+        padding: 20px;
+        max-width: 800px;
+        width: 100%;
+      }
+
+      h1 {
+        color: #2d3436;
+      }
+
+      .summary {
+        margin: 20px 0;
+        font-size: 18px;
+        color: #2d3436;
+      }
+
+      .controls {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      input {
+        padding: 8px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+      }
+
+      #searchInput {
+        width: 200px;
+      }
+
+      button {
+        padding: 8px 16px;
+        background-color: #0984e3;
+        color: white;
+        border-radius: 5px;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 5px;
+
+        &:hover {
+          background-color: #0652dd;
+        }
+      }
+
+      .form {
+        background: #fff;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .form.hidden {
+        display: none;
+      }
+      .form input {
+        width: 100%;
+        margin: 5px 0;
+      }
+
+      .form-button {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      #saveBtn {
+        background-color: #00b894;
+        &:hover {
+          background-color: #009975;
+        }
+      }
+
+      #cancelBtn {
+        background-color: #e55039;
+        &:hover {
+          background-color: #b33939;
+        }
+      }
+
+      .workout-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+        & th,
+        td {
+          padding: 10px;
+          text-align: left;
+          border-bottom: 1px solid #ced4da;
+        }
+
+        & th {
+          background-color: #4b6585;
+          color: white;
+        }
+
+        & td button {
+          background-color: #e55039;
+          padding: 5px 10px;
+          margin: 0 5px;
+          &:hover {
+            background-color: #b33939;
+          }
+        }
+      }
+
+      td button:first-child {
+        background-color: #0984e3;
+
+        &:hover {
+          background-color: #0652dd;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .controls {
+          flex-direction: column;
+          align-items: center;
+        }
+        #searchInput {
+          width: 100%;
+        }
+        .workout-table {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Workout Tracker</h1>
+      <div class="summary">
+        <p>Total Sets: <span id="totalSets">0</span></p>
+      </div>
+      <div class="controls">
+        <input type="text" id="searchInput" placeholder="Filter by exercise" />
+        <button id="addBtn">Add Workout</button>
+      </div>
+      <div class="form hidden" id="workoutForm">
+        <input type="text" id="exerciseInput" placeholder="Exercise Name" />
+        <input type="number" id="setsInput" min="1" placeholder="Sets" />
+        <input type="number" id="repsInput" min="1" placeholder="Reps" />
+        <input
+          type="number"
+          id="weightInput"
+          min="1"
+          placeholder="weight (kg)"
+          step="0.1"
+        />
+        <div class="form-button">
+          <button id="saveBtn">Save</button>
+          <button id="cancelBtn">Cancel</button>
+        </div>
+      </div>
+      <table id="workoutTable" class="workout-table">
+        <thead>
+          <tr>
+            <th>Exercise</th>
+            <th>Sets</th>
+            <th>Reps</th>
+            <th>Weight (kg)</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="workoutLists"></tbody>
+      </table>
+    </div>
+
+    <script>
+      const searchInput = document.getElementById("searchInput");
+      const addBtn = document.getElementById("addBtn");
+      const workoutForm = document.getElementById("workoutForm");
+      const exerciseInput = document.getElementById("exerciseInput");
+      const setsInput = document.getElementById("setsInput");
+      const repsInput = document.getElementById("repsInput");
+      const weightInput = document.getElementById("weightInput");
+      const saveBtn = document.getElementById("saveBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const workoutLists = document.getElementById("workoutLists");
+      const totalSets = document.getElementById("totalSets");
+
+      let workouts;
+      try {
+        const stored = JSON.parse(localStorage.getItem("workouts"));
+        workouts = Array.isArray(stored) ? stored : [];
+      } catch (e) {
+        workouts = [];
+      }
+
+      let editingId = null;
+
+      function renderWorkouts(filter = "") {
+        workoutLists.innerHTML = "";
+        const filteredWorkouts = workouts.filter((workout) =>
+          workout.exercise.toLowerCase().includes(filter.toLowerCase())
+        );
+        filteredWorkouts.forEach((workout) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+        <td>${workout.exercise}</td>
+        <td>${workout.sets}</td>
+        <td>${workout.reps}</td>
+        <td>${workout.weight}</td>
+         <td>
+          <button onclick="editWorkout(${workout.id})">Edit</button>
+          <button onclick="deleteWorkout(${workout.id})">Delete</button>
+         </td>
+        `;
+          workoutLists.appendChild(tr);
+        });
+        updateSummary();
+      }
+
+      function updateSummary() {
+        const total = workouts.reduce((sum, workout) => sum + workout.sets, 0);
+        totalSets.textContent = total;
+        localStorage.setItem("workouts", JSON.stringify(workouts));
+      }
+
+      function openForm(id = null) {
+        editingId = id;
+        if (id) {
+          const workout = workouts.find((w) => w.id === id);
+          exerciseInput.value = workout.exercise;
+          setsInput.value = workout.sets;
+          repsInput.value = workout.reps;
+          weightInput.value = workout.weight;
+        } else {
+          exerciseInput.value = "";
+          setsInput.value = "";
+          repsInput.value = "";
+          weightInput.value = "";
+        }
+
+        workoutForm.classList.remove("hidden");
+      }
+
+      addBtn.addEventListener("click", () => {
+        searchInput.value = "";
+        openForm();
+      });
+
+      saveBtn.addEventListener("click", () => {
+        const exercise = exerciseInput.value.trim();
+        const sets = parseInt(setsInput.value);
+        const reps = parseInt(repsInput.value);
+        const weight = parseFloat(weightInput.value);
+
+        if (!exercise || isNaN(sets) || isNaN(reps) || isNaN(weight)) {
+          alert("Please enter valid exercise, sets, reps, and weight values.");
+          return;
+        }
+
+        if (editingId) {
+          workouts = workouts.map((workout) =>
+            workout.id === editingId
+              ? { ...workout, exercise, sets, reps, weight }
+              : workout
+          );
+        } else {
+          workouts.push({
+            id: Date.now(),
+            exercise,
+            sets,
+            reps,
+            weight,
+          });
+        }
+
+        editingId = null;
+        localStorage.setItem("workouts", JSON.stringify(workouts));
+        renderWorkouts(searchInput.value);
+        workoutForm.classList.add("hidden");
+      });
+
+      cancelBtn.addEventListener("click", () => {
+        workoutForm.classList.add("hidden");
+      });
+
+      function editWorkout(id) {
+        openForm(id);
+      }
+
+      function deleteWorkout(id) {
+        workouts = workouts.filter((workout) => workout.id !== id);
+        localStorage.setItem("workouts", JSON.stringify(workouts));
+        renderWorkouts(searchInput.value);
+      }
+
+      searchInput.addEventListener("input", () => {
+        renderWorkouts(searchInput.value);
+      });
+
+      renderWorkouts();
+    </script>
+  </body>
+</html>

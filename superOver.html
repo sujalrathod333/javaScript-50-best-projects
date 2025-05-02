@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Over Game</title>
+  <style>
+     body {
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #32f002;
+    }
+
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      width: 400px;
+      text-align: center;
+    }
+
+    button {
+      border: none;
+      border-radius: 5px;
+      background: #e72424;
+      padding: 10px;
+      margin: 5px;
+      color: white;
+      font-size: 17px;
+      cursor: pointer;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    button img {
+      width: 30px;
+      height: 30px;
+    }
+
+    button:hover {
+      background: #2146be;
+    }
+
+    button:active {
+      background: #701616;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Super Over Cricket Game</h2>
+    <div>You Score: <span id="playerScore">0</span> | Wickets: <span id="playerWickets">0</span> | Balls: <span id="playerBalls">0</span>/6</div>
+    <button id="batBtn"><img src="cricket-bat-clipart-md.png" alt="">Bat</button>
+    <div>Opponent Score: <span id="oppoScore">0</span> | Wickets: <span id="oppoWickets">0</span> | Balls: <span id="oppoBalls">0</span>/6</div>
+    <button id="bowlBtn" disabled><img src="ball-removebg-preview.png" alt="">Bowl</button>
+    <div id="gameStatus">Game On - Batting</div>
+  </div>
+  <script>
+    let playerScore = 0, playerBalls = 0, playerWickets = 0;
+    let oppoBalls = 0, oppoScore = 0, oppoWickets = 0;
+
+    const batBtn = document.getElementById("batBtn");
+    const bowlBtn = document.getElementById("bowlBtn");
+
+    batBtn.addEventListener("click", playerBat);
+    bowlBtn.addEventListener("click", playerBowl);
+
+    function playerBat() {
+      const runs = Math.floor(Math.random() * 7);
+      playerBalls++;
+
+      if (runs === 0) {
+        playerWickets++;
+      } else {
+        playerScore += runs;
+      }
+
+      updateScores();
+
+      if (playerBalls === 6 || playerWickets === 2) {
+        batBtn.disabled = true;
+        bowlBtn.disabled = false;
+        document.getElementById("gameStatus").textContent = "Your turn to bowl!";
+      }
+    }
+
+    function playerBowl() {
+      const runs = Math.floor(Math.random() * 7);
+      oppoBalls++;
+
+      if (runs === 0) {
+        oppoWickets++;
+      } else {
+        oppoScore += runs;
+      }
+
+      updateScores();
+
+      if (oppoBalls === 6 || oppoWickets === 2 || oppoScore > playerScore) {
+        bowlBtn.disabled = true;
+        endGame();
+      }
+    }
+
+    function updateScores() {
+      document.getElementById("playerScore").textContent = playerScore;
+      document.getElementById("playerBalls").textContent = playerBalls;
+      document.getElementById("playerWickets").textContent = playerWickets;
+      document.getElementById("oppoScore").textContent = oppoScore;
+      document.getElementById("oppoWickets").textContent = oppoWickets;
+      document.getElementById("oppoBalls").textContent = oppoBalls;
+    }
+
+    function endGame() {
+      if (oppoScore > playerScore) {
+        document.getElementById("gameStatus").textContent = "You Lost!";
+      } else if (oppoScore === playerScore) {
+        document.getElementById("gameStatus").textContent = "Match Tied!";
+      } else {
+        document.getElementById("gameStatus").textContent = "You Won!";
+      }
+    }
+  </script>
+</body>
+</html>

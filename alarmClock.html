@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animated Alarm Clock</title>
+  <style>
+    body{
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      background-color: #2d3436;
+      min-height: 100vh;
+      color: #fff;
+    }
+
+    .container{
+      text-align: center;
+    }
+
+    h1{
+      color: #dfe6e9;
+    }
+
+    .clock{
+      height: 200px;
+      background: #636e72;
+      border-radius: 50%;
+      position: relative;
+      margin: 20px auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      width: 200px;
+    }
+
+    .hand{
+      position: absolute;
+      left: 50%;
+      bottom: 50%;
+      transform-origin: bottom;
+      background: #fff;
+    }
+
+    .hour{
+      width: 6px;
+      height: 50px;
+      background: #d63031;
+    }
+
+    .minute{
+      width: 4px;
+      height: 70px;
+      background: #00b894;
+    }
+
+    .second{
+      width: 2px;
+      height: 90px;
+      background: #feca57;
+    }
+
+    .center{
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .digital-clock{
+      font-size: 24px;
+      margin: 10px 0;
+    }
+
+    .alarm-form{
+      margin: 20px 0;
+    }
+
+    input{
+      padding: 8px;
+      font-size: 16px;
+      width: 115px;
+      margin: 5px;
+      border: 1px solid #dfe6e9;
+      background-color: #636e72;
+      color: #fff;
+      border-radius: 5px;
+    }
+
+    input::placeholder{
+      color: #fff;
+      text-align: center;
+    }
+
+    button{
+      border-radius: 5px;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 8px 16px;
+      background-color: #0984e3;
+    }
+
+    button:hover{
+      background-color: #0652dd;
+    }
+
+    #clearAlarmBtn{
+      background-color: #e55039;
+    }
+
+    #clearAlarmBtn:hover{
+      background-color: #f52f10;
+    }
+
+   p{
+    font-size: 18px;
+   }
+
+   #home{
+    border-radius: 5px;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 8px 16px;
+      background-color: #060707;
+      
+      & a{
+        font-size: 16px;
+        color: white;
+        text-decoration: none;
+
+      }
+   }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button id="home"><a href="index.html">Home</a></button>
+    <h1>Animated Alarm Clock</h1>
+    <div class="clock">
+      <div class="hand hour"></div>
+      <div class="hand minute"></div>
+      <div class="hand second"></div>
+      <div class="center"></div>
+    </div>
+    <div class="digital-clock" id="digitalClock">00:00:00</div>
+    <div class="alarm-form">
+      <input type="number" name="hour" id="alarmHour" placeholder="Hour (0-23)" min="0" max="23">
+      <input type="number" name="minute" id="alarmMinute" placeholder="Minute (0-59)" min="0" max="59">
+      <button id="setAlarmBtn">Set Alarm</button>
+      <button id="clearAlarmBtn">Clear Alarm</button>
+    </div>
+    <p id="alarmStatus">No Alarm Set</p>
+  </div>
+  <script>
+    const hourHand = document.querySelector('.hour');
+    const minuteHand = document.querySelector('.minute');
+    const secondHand = document.querySelector('.second');
+    const digitalClock = document.getElementById('digitalClock');
+    const alarmHourInput = document.getElementById('alarmHour');
+    const alarmMinuteInput = document.getElementById('alarmMinute');
+    const setAlarmBtn = document.getElementById('setAlarmBtn');
+    const clearAlarmBtn = document.getElementById('clearAlarmBtn');
+    const alarmStatus = document.getElementById('alarmStatus');
+
+    let alarmTime = null;
+
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+
+      const hourDeg = (hours % 12 + minutes / 60) * 30;
+      const minuteDeg = (minutes + seconds / 60) * 6;
+      const secondDeg = seconds * 6;
+
+      hourHand.style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+      minuteHand.style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
+      secondHand.style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+
+      digitalClock.textContent = `${hours.toString().padStart(2, 0)}:${minutes.toString().padStart(2, 0)}:${seconds.toString().padStart(2, 0)}`;
+
+      if (alarmTime && hours === alarmTime.hours && minutes === alarmTime.minutes && seconds === 0) {
+        alert('Alarm ringing!');
+        clearAlarm();
+      }
+    }
+
+    setInterval(updateClock, 1000);
+
+    setAlarmBtn.addEventListener('click', () => {
+      const hours = parseInt(alarmHourInput.value);
+      const minutes = parseInt(alarmMinuteInput.value);
+
+      if (isNaN(hours) || isNaN(minutes)) {
+        alert('Please enter valid hours and minutes');
+        return;
+      }
+
+      alarmTime = { hours, minutes };
+      alarmStatus.textContent = `Alarm set for ${hours.toString().padStart(2, 0)}:${minutes.toString().padStart(2, 0)}`;
+      alarmHourInput.value = '';
+      alarmMinuteInput.value = '';
+    });
+
+    clearAlarmBtn.addEventListener("click", clearAlarm);
+
+    function clearAlarm() {
+      alarmTime = null;
+      alarmStatus.textContent = `No alarm set`;
+    }
+
+    updateClock();
+  </script>
+</body>
+</html>
