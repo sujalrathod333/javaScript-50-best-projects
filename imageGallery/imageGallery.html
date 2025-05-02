@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Image Gallery</title>
+  <style>
+    body{
+      margin: 0;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      background-color: #f1f2f6;
+    }
+
+    .container{
+      text-align: center;
+      padding: 20px;
+      margin: 0 auto;
+      max-width: 1200px
+    }
+
+    h1{
+      color: #2f3542;
+    }
+
+    .gallery{
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      padding: 10px;
+      margin: 20px 0;
+    }
+
+    .gallery img{
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.2s;
+
+      
+      }
+
+    .gallery img:hover{
+          transform: scale(1.05);
+    }
+
+    .lightbox{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .lightbox.hidden{
+        display: none;
+      }
+
+      #lightboxImg{
+        max-width: 90%;
+        max-height: 80%;
+        border-radius: 5px;
+      }
+
+    .nav-btn{
+    background: #0984e3;
+    color: white;
+    border: none;
+    font-size: 24px;
+    padding: 10px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    }
+
+    #prevBtn{
+      left: 20px;
+    }
+
+    #nextBtn{
+      right: 20px;
+    }
+
+    .close-btn{
+    background: #e55039;
+    color: white;
+    border: none;
+    font-size: 24px;
+    padding: 10px;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    }
+
+    .nav-btn:hover{
+      background: #0652dd;
+    }
+
+    .close-btn:hover{
+      background: #b33939;
+    }
+
+    @media (max-width: 600px) {
+      .gallery{
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Interactive Image Gallery</h1>
+    <div class="gallery" id="gallery"></div>
+    <div id="lightbox" class="lightbox hidden">
+      <button id="prevBtn" class="nav-btn">&larr;</button>
+      <img src="" alt="Lightbox img" id="lightboxImg">
+      <button id="nextBtn" class="nav-btn">&rarr;</button>
+      <button id="closeBtn" class="close-btn">&times;</button>
+    </div>
+  </div>
+
+  <script>
+    const gallery=document.getElementById('gallery');
+    const lightbox=document.getElementById('lightbox');
+    const lightboxImg=document.getElementById('lightboxImg');
+    const prevBtn=document.getElementById('prevBtn');
+    const nextBtn=document.getElementById('nextBtn');
+    const closeBtn=document.getElementById('closeBtn');
+    
+    const images = [
+      "img1.jfif",
+      "img2.png",
+      "img3.jfif",
+      "img4.jfif",
+      "img5.png",
+      "img6.png",
+      "img7.png"
+    ];
+
+    let currentIndex=0;
+
+    function renderGallery(){
+      gallery.innerHTML='';
+      images.forEach((src, index) => {
+        const img=document.createElement('img');
+        img.src=src;
+        img.alt= `Image ${index +1}`;
+        img.addEventListener('click', () => openLightbox(index))
+        gallery.appendChild(img)
+      });
+    }
+
+    function openLightbox(index){
+      currentIndex=index;
+      lightboxImg.src=images[currentIndex];
+      lightbox.classList.remove('hidden');
+    }
+
+    closeBtn.addEventListener('click', ()=> {
+      lightbox.classList.add('hidden');
+    });
+
+    prevBtn.addEventListener('click', ()=> {
+      currentIndex=(currentIndex - 1 + images.length) % images.length;
+      lightboxImg.src=images[currentIndex];
+    });
+
+    nextBtn.addEventListener('click', ()=> {
+      currentIndex=(currentIndex + 1) % images.length;
+      lightboxImg.src=images[currentIndex];
+    });
+
+    document.addEventListener('keydown', (e)=> {
+      if (!lightbox.classList.contains('hidden')) {
+        if (e.key==='ArrowLeft') prevBtn.click();
+        if (e.key==='ArrowRight') nextBtn.click();
+        if (e.key==='Escape') closeBtn.click();
+      }
+    })
+
+    renderGallery();
+
+
+  </script>
+</body>
+</html>
