@@ -1,138 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bubble Popper</title>
-  <style>
-    body{
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      font-family: Verdana, Geneva, Tahoma, sans-serif;
-      background-color: #87ceeb;
-      overflow: hidden;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bubble Popper</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        background-color: #87ceeb;
+        overflow: hidden;
+      }
 
-    .container{
-      text-align: center;
-    }
+      .container {
+        text-align: center;
+      }
 
-    h1{
-      color: #fff;
-      text-shadow: 1px 1px 2px #333;
-    }
+      h1 {
+        color: #fff;
+        text-shadow: 1px 1px 2px #333;
+      }
 
-    p{
-      font-size: 20px;
-      color: #fff;
-    }
+      p {
+        font-size: 20px;
+        color: #fff;
+      }
 
-    button{
-      padding: 10px 20px;
-      border-radius: 5px;
-      border: none;
-      color: white;
-      background-color: #ff69b4;
-      cursor: pointer;
-      font-size: 16px;
-    }
+      button {
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: none;
+        color: white;
+        background-color: #ff69b4;
+        cursor: pointer;
+        font-size: 16px;
+      }
 
-    button:hover{
-      background-color: #ff1493;
-    }
+      button:hover {
+        background-color: #ff1493;
+      }
 
-    .bubble-area{
-      position: relative;
-      width: 600px;
-      height: 400px;
-      background-color: rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      overflow: hidden;
-    }
+      .bubble-area {
+        position: relative;
+        width: 600px;
+        height: 400px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        overflow: hidden;
+      }
 
-    .bubble{
-      position: absolute;
-      width: 50px;
-      height: 40px;
-      /* background-color: rgba(255, 255, 255, 0.8); */
-      border-radius: 50%;
-      cursor: pointer;
-      animation: float 4s linear forwards;
-    }
+      .bubble {
+        position: absolute;
+        width: 50px;
+        height: 40px;
+        /* background-color: rgba(255, 255, 255, 0.8); */
+        border-radius: 50%;
+        cursor: pointer;
+        animation: float 4s linear forwards;
+      }
 
-    @keyframes float {
-      0% { bottom: -40px; }
-      100% { bottom: 100%; }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Bubble Popper Game</h1>
-    <p><span id="score">0</span></p>
-    <button id="startBtn">Start Game</button>
-    <div id="bubbleArea" class="bubble-area"></div>
-  </div>
-  <script>
-    const scoreDisplay = document.getElementById("score");
-const startBtn = document.getElementById("startBtn");
-const bubbleArea = document.getElementById("bubbleArea");
+      @keyframes float {
+        0% {
+          bottom: -40px;
+        }
+        100% {
+          bottom: 100%;
+        }
+      }
 
-startBtn.addEventListener('click', startGame);
+      #buttonq {
+        color: black;
+        margin-top: 25px;
+        outline: 0;
+        grid-gap: 8px;
+        align-items: center;
+        background: 0 0;
+        border: 1px solid #000;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        flex-shrink: 0;
+        font-size: 16px;
+        gap: 8px;
+        justify-content: center;
+        line-height: 1.5;
+        overflow: hidden;
+        padding: 12px 16px;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        transition: all 0.14s ease-out;
+        white-space: nowrap;
+        &:hover {
+          box-shadow: 4px 4px 0 #000;
+          transform: translate(-4px, -4px);
+        }
+        &:focus-visible {
+          outline-offset: 1px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button id="buttonq">home</button>
+      <h1>Bubble Popper Game</h1>
+      <p><span id="score">0</span></p>
+      <button id="startBtn">Start Game</button>
+      <div id="bubbleArea" class="bubble-area"></div>
+    </div>
+    <script>
+      const scoreDisplay = document.getElementById("score");
+      const startBtn = document.getElementById("startBtn");
+      const bubbleArea = document.getElementById("bubbleArea");
+      const button = document.getElementById("buttonq");
 
-let score = 0;
-let intervalId = null;
-let gameTimer = null;
+      button.addEventListener("click", () => {
+        location.href = "/index.html";
+      });
 
-bubbleArea.addEventListener("click", (e) => {
-  if (e.target.classList.contains("bubble")) {
-    e.target.remove();
-    score += 1;
-    scoreDisplay.textContent = score;
-  }
-});
+      startBtn.addEventListener("click", startGame);
 
-function startGame() {
-  if (intervalId) return;
-  startBtn.disabled = true;
-  score = 0;
-  scoreDisplay.textContent = score;
-  bubbleArea.innerHTML = "";
+      let score = 0;
+      let intervalId = null;
+      let gameTimer = null;
 
-  intervalId = setInterval(spawnBubble, Math.random() * 1000 + 1000);
+      bubbleArea.addEventListener("click", (e) => {
+        if (e.target.classList.contains("bubble")) {
+          e.target.remove();
+          score += 1;
+          scoreDisplay.textContent = score;
+        }
+      });
 
-  
-  gameTimer = setTimeout(stopGame, 30000);
-}
+      function startGame() {
+        if (intervalId) return;
+        startBtn.disabled = true;
+        score = 0;
+        scoreDisplay.textContent = score;
+        bubbleArea.innerHTML = "";
 
-function spawnBubble() {
-  const bubble = document.createElement("div");
-  bubble.className = "bubble";
-  const xPos = Math.random() * (bubbleArea.offsetWidth - 40);
-  bubble.style.left = `${xPos}px`;
-  const red = Math.floor(Math.random() * 255) + 1;
-  const green = Math.floor(Math.random() * 255) + 1;
-  const blue = Math.floor(Math.random() * 255) + 1;
-  bubble.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, 0.8)`;
+        intervalId = setInterval(spawnBubble, Math.random() * 1000 + 1000);
 
-  bubbleArea.appendChild(bubble);
+        gameTimer = setTimeout(stopGame, 30000);
+      }
 
-  setTimeout(() => {
-    if (bubble.parentElement) bubble.remove();
-  }, 4000);
-}
+      function spawnBubble() {
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+        const xPos = Math.random() * (bubbleArea.offsetWidth - 40);
+        bubble.style.left = `${xPos}px`;
+        const red = Math.floor(Math.random() * 255) + 1;
+        const green = Math.floor(Math.random() * 255) + 1;
+        const blue = Math.floor(Math.random() * 255) + 1;
+        bubble.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, 0.8)`;
 
-function stopGame() {
-  clearInterval(intervalId);
-  clearTimeout(gameTimer);
-  intervalId = null;
-  startBtn.disabled = false;
-  alert("Game Over! Your score is " + score);
-}
+        bubbleArea.appendChild(bubble);
 
-  </script>
-</body>
+        setTimeout(() => {
+          if (bubble.parentElement) bubble.remove();
+        }, 4000);
+      }
+
+      function stopGame() {
+        clearInterval(intervalId);
+        clearTimeout(gameTimer);
+        intervalId = null;
+        startBtn.disabled = false;
+        alert("Game Over! Your score is " + score);
+      }
+    </script>
+  </body>
 </html>

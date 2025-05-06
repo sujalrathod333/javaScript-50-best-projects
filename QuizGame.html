@@ -1,233 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz Game</title>
-  <style>
-    body{
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-      background-color: #f1f2f6;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz Game</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+          sans-serif;
+        background-color: #f1f2f6;
+      }
 
-    .container{
-      text-align: center;
-      max-width: 600px;
-      padding: 20px;
-    }
+      .container {
+        text-align: center;
+        max-width: 600px;
+        padding: 20px;
+      }
 
-    h1{
-      color: #2f3542;
-    }
+      h1 {
+        color: #2f3542;
+      }
 
-    .section{
-       margin: 20px 0;
-       padding: 20px;
-       border-radius: 10px;
-       background: #fff;
-       box-shadow: 0 0 5px rgba(0,0,0,0.4);
-    }
+      .section {
+        margin: 20px 0;
+        padding: 20px;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+      }
 
-    input{
-      display: block;
-      width: 80%;
-      margin: 10px auto;
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #ced4da;
-      border-radius: 5px;
-    }
+      input {
+        display: block;
+        width: 80%;
+        margin: 10px auto;
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+      }
 
-    button{
-      padding: 8px 16px;
-      font-size: 16px;
-      background-color: #4b6584;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-      margin: 5px;
-      color: white;
-    }
+      button {
+        padding: 8px 16px;
+        font-size: 16px;
+        background-color: #4b6584;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        margin: 5px;
+        color: white;
+      }
 
-    button:hover{
-      background-color: #3867d6;
-    }
+      button:hover {
+        background-color: #3867d6;
+      }
 
-    .option{
-      display: block;
-      padding: 10px;
-      margin: 5px auto;
-      width: 80%;
-      background: #f8f9fa;
-      border: 1px solid #ced4da;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+      .option {
+        display: block;
+        padding: 10px;
+        margin: 5px auto;
+        width: 80%;
+        background: #f8f9fa;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        cursor: pointer;
+      }
 
-    .option:hover{
-      background: #e9ecef;
-    }
+      .option:hover {
+        background: #e9ecef;
+      }
 
-    .option.selected{
-      background: #74b9ff;
-      color: white;
-    }
+      .option.selected {
+        background: #74b9ff;
+        color: white;
+      }
 
-    p{
-      font-size: 18px;
-      color: #2f3542;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Interactive Quiz Maker</h1>
-    <div id="quizMaker" class="section">
-      <input type="text" id="questionInput" placeholder="Enter question">
-      <input type="text" id="option1" placeholder="Option 1">
-      <input type="text" id="option2" placeholder="Option 2">
-      <input type="text" id="option3" placeholder="Option 3">
-      <input type="text" id="option4" placeholder="Option 4">
-      <input type="number" id="correctOption" placeholder="Correct Option (1-4)" min="1" max="4">
-      <button id="addQuestionBtn">Add Question</button>
-      <button id="startQuizBtn">Start Quiz</button>
+      p {
+        font-size: 18px;
+        color: #2f3542;
+      }
+
+      #buttonq {
+        color: black;
+        margin-top: 25px;
+        outline: 0;
+        grid-gap: 8px;
+        align-items: center;
+        background: 0 0;
+        border: 1px solid #000;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        flex-shrink: 0;
+        font-size: 16px;
+        gap: 8px;
+        justify-content: center;
+        line-height: 1.5;
+        overflow: hidden;
+        padding: 12px 16px;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        transition: all 0.14s ease-out;
+        white-space: nowrap;
+        &:hover {
+          box-shadow: 4px 4px 0 #000;
+          transform: translate(-4px, -4px);
+        }
+        &:focus-visible {
+          outline-offset: 1px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button id="buttonq">home</button>
+      <h1>Interactive Quiz Maker</h1>
+      <div id="quizMaker" class="section">
+        <input type="text" id="questionInput" placeholder="Enter question" />
+        <input type="text" id="option1" placeholder="Option 1" />
+        <input type="text" id="option2" placeholder="Option 2" />
+        <input type="text" id="option3" placeholder="Option 3" />
+        <input type="text" id="option4" placeholder="Option 4" />
+        <input
+          type="number"
+          id="correctOption"
+          placeholder="Correct Option (1-4)"
+          min="1"
+          max="4"
+        />
+        <button id="addQuestionBtn">Add Question</button>
+        <button id="startQuizBtn">Start Quiz</button>
+      </div>
+      <div id="quizTaker" class="section" style="display: none">
+        <h2>Take the Quiz</h2>
+        <div id="questionDisplay"></div>
+        <button id="nextBtn">Next</button>
+        <p id="result" style="display: none">
+          Score: <span id="scoreDisplay">0</span> out of
+          <span id="totalQuestions">0</span>
+        </p>
+      </div>
     </div>
-    <div id="quizTaker" class="section" style="display: none;">
-      <h2>Take the Quiz</h2>
-      <div id="questionDisplay"></div>
-      <button id="nextBtn">Next</button>
-      <p id="result" style="display: none;">Score: <span id="scoreDisplay">0</span> out of <span id="totalQuestions">0</span></p>
-    </div>
-  </div>
-  <script>
-    const questionInput = document.getElementById("questionInput");
-    const optionInputs = [
-      document.getElementById('option1'), 
-      document.getElementById('option2'),
-      document.getElementById('option3'), 
-      document.getElementById('option4')
-    ];
-    const correctOptionInput = document.getElementById('correctOption');
-    const addQuestionBtn = document.getElementById('addQuestionBtn');
-    const startQuizBtn = document.getElementById('startQuizBtn');
-    const quizMaker = document.getElementById('quizMaker');
-    const quizTaker = document.getElementById('quizTaker');
-    const questionDisplay = document.getElementById('questionDisplay');
-    const nextBtn = document.getElementById('nextBtn');
-    const result = document.getElementById('result');
-    const scoreDisplay = document.getElementById('scoreDisplay');
-    const totalQuestions = document.getElementById('totalQuestions');
+    <script>
+      const questionInput = document.getElementById("questionInput");
+      const optionInputs = [
+        document.getElementById("option1"),
+        document.getElementById("option2"),
+        document.getElementById("option3"),
+        document.getElementById("option4"),
+      ];
+      const correctOptionInput = document.getElementById("correctOption");
+      const addQuestionBtn = document.getElementById("addQuestionBtn");
+      const startQuizBtn = document.getElementById("startQuizBtn");
+      const quizMaker = document.getElementById("quizMaker");
+      const quizTaker = document.getElementById("quizTaker");
+      const questionDisplay = document.getElementById("questionDisplay");
+      const nextBtn = document.getElementById("nextBtn");
+      const result = document.getElementById("result");
+      const scoreDisplay = document.getElementById("scoreDisplay");
+      const totalQuestions = document.getElementById("totalQuestions");
+      const button = document.getElementById("buttonq");
 
-    let questions = [];
-    let currentQuestionIndex = 0;
-    let score = 0;
-    let selectedIndex = null;
-
-    addQuestionBtn.addEventListener("click", () => {
-      const question = questionInput.value.trim();
-      const correctOption = parseInt(correctOptionInput.value);
-      const options = optionInputs.map(input => input.value.trim());
-
-      if (correctOption < 1 || correctOption > 4 || isNaN(correctOption)) {
-        alert("Please select a correct option between 1 and 4");
-        return;
-      }
-      
-      if (!question) {
-        alert("Please enter a question");
-        return;
-      }
-      
-      if (options.some(opt => !opt)) {
-        alert("Please fill all option fields");
-        return;
-      } 
-
-      questions.push({
-        question, 
-        options, 
-        correct: correctOption - 1 
+      button.addEventListener("click", () => {
+        location.href = "/index.html";
       });
-      clearInputs();
-      alert(`Question added! Total questions: ${questions.length}`);
-    });
 
-    startQuizBtn.addEventListener('click', () => {
-      if (questions.length === 0) {
-        alert("Please add at least one question");
-        return;
-      }
+      let questions = [];
+      let currentQuestionIndex = 0;
+      let score = 0;
+      let selectedIndex = null;
 
-      quizMaker.style.display = 'none';
-      quizTaker.style.display = 'block';
-      currentQuestionIndex = 0;
-      score = 0;
-      totalQuestions.textContent = questions.length;
-      showQuestion();
-    });
+      addQuestionBtn.addEventListener("click", () => {
+        const question = questionInput.value.trim();
+        const correctOption = parseInt(correctOptionInput.value);
+        const options = optionInputs.map((input) => input.value.trim());
 
-    function showQuestion() {
-      questionDisplay.innerHTML = '';
-      const { question, options } = questions[currentQuestionIndex];
-      
-      const questionElement = document.createElement('h3');
-      questionElement.textContent = question;
-      questionDisplay.appendChild(questionElement);
+        if (correctOption < 1 || correctOption > 4 || isNaN(correctOption)) {
+          alert("Please select a correct option between 1 and 4");
+          return;
+        }
 
-      options.forEach((option, index) => {
-        const optionDiv = document.createElement('div');
-        optionDiv.className = "option";
-        optionDiv.textContent = option;
-        optionDiv.dataset.index = index;
-        optionDiv.addEventListener('click', handleAnswer);
-        questionDisplay.appendChild(optionDiv);
+        if (!question) {
+          alert("Please enter a question");
+          return;
+        }
+
+        if (options.some((opt) => !opt)) {
+          alert("Please fill all option fields");
+          return;
+        }
+
+        questions.push({
+          question,
+          options,
+          correct: correctOption - 1,
+        });
+        clearInputs();
+        alert(`Question added! Total questions: ${questions.length}`);
       });
-    }
-    
-    function handleAnswer(e) {
-      const options = questionDisplay.querySelectorAll('.option');
-      options.forEach(opt => opt.classList.remove('selected'));
-      e.target.classList.add('selected');
-      selectedIndex = parseInt(e.target.dataset.index);
-    }
 
-    nextBtn.addEventListener("click", () => {
-      if (selectedIndex === null) {
-        alert('Please select an answer!');
-        return;
-      }
-      
-      if (selectedIndex === questions[currentQuestionIndex].correct) {
-        score++;
-        scoreDisplay.textContent = score;
-      }
-      
-      selectedIndex = null;
-      currentQuestionIndex++;
-      
-      if (currentQuestionIndex < questions.length) {
+      startQuizBtn.addEventListener("click", () => {
+        if (questions.length === 0) {
+          alert("Please add at least one question");
+          return;
+        }
+
+        quizMaker.style.display = "none";
+        quizTaker.style.display = "block";
+        currentQuestionIndex = 0;
+        score = 0;
+        totalQuestions.textContent = questions.length;
         showQuestion();
-      } else {
-        showResult();
+      });
+
+      function showQuestion() {
+        questionDisplay.innerHTML = "";
+        const { question, options } = questions[currentQuestionIndex];
+
+        const questionElement = document.createElement("h3");
+        questionElement.textContent = question;
+        questionDisplay.appendChild(questionElement);
+
+        options.forEach((option, index) => {
+          const optionDiv = document.createElement("div");
+          optionDiv.className = "option";
+          optionDiv.textContent = option;
+          optionDiv.dataset.index = index;
+          optionDiv.addEventListener("click", handleAnswer);
+          questionDisplay.appendChild(optionDiv);
+        });
       }
-    });
 
-    function showResult() {
-      questionDisplay.innerHTML = `<h3>Quiz Completed!</h3>`;
-      nextBtn.style.display = 'none';
-      result.style.display = 'block';
-    }
+      function handleAnswer(e) {
+        const options = questionDisplay.querySelectorAll(".option");
+        options.forEach((opt) => opt.classList.remove("selected"));
+        e.target.classList.add("selected");
+        selectedIndex = parseInt(e.target.dataset.index);
+      }
 
-    function clearInputs() {
-      questionInput.value = '';
-      optionInputs.forEach(input => input.value = "");
-      correctOptionInput.value = '';
-    }
-  </script>
-</body>
+      nextBtn.addEventListener("click", () => {
+        if (selectedIndex === null) {
+          alert("Please select an answer!");
+          return;
+        }
+
+        if (selectedIndex === questions[currentQuestionIndex].correct) {
+          score++;
+          scoreDisplay.textContent = score;
+        }
+
+        selectedIndex = null;
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+          showQuestion();
+        } else {
+          showResult();
+        }
+      });
+
+      function showResult() {
+        questionDisplay.innerHTML = `<h3>Quiz Completed!</h3>`;
+        nextBtn.style.display = "none";
+        result.style.display = "block";
+      }
+
+      function clearInputs() {
+        questionInput.value = "";
+        optionInputs.forEach((input) => (input.value = ""));
+        correctOptionInput.value = "";
+      }
+    </script>
+  </body>
 </html>

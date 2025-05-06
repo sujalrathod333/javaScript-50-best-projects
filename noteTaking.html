@@ -1,274 +1,318 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Note Taking App</title>
-  <style>
-    body{
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      min-height: 100vh;
-      background-color: #f1f2f6;
-    }
-
-    .container{
-      text-align: center;
-      padding: 20px;
-      max-width: 1000px;
-      width: 100%;
-    }
-
-    h1{
-      color: #2d3436;
-    }
-
-    .controls{
-      margin: 20px 0;
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    input, textarea{
-      padding: 8px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: 1px solid #ced4da;
-    }
-
-    #searchInput{
-     width: 300px;
-    }
-    button{
-      padding: 8px 16px;
-      font-size: 16px;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      background-color: #0984e3;
-
-      &:hover{
-        background-color: #0652dd;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Note Taking App</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+          sans-serif;
+        min-height: 100vh;
+        background-color: #f1f2f6;
       }
-    }
 
-    .notes-grid{
-      display: grid;
-      gap: 20px;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      margin: 20px 0;
-    }
+      .container {
+        text-align: center;
+        padding: 20px;
+        max-width: 1000px;
+        width: 100%;
+      }
 
-    .note{
-      background: #fff;
-      padding: 15px;
-      border-radius: 10px;
-      position: relative;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-
-      & h2{
-        margin: 0 0 10px;
+      h1 {
         color: #2d3436;
       }
 
-      & p{
-        margin: 0;
-        color: #4b6584;
+      .controls {
+        margin: 20px 0;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
       }
 
-      & button{
-        padding: 5px 10px;
-        margin: 5px;
-        background-color: #e55039;
+      input,
+      textarea {
+        padding: 8px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+      }
 
-        &:hover{
-          background-color: #b33939;
+      #searchInput {
+        width: 300px;
+      }
+      button {
+        padding: 8px 16px;
+        font-size: 16px;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #0984e3;
+
+        &:hover {
+          background-color: #0652dd;
         }
       }
-    }
 
-    .modal{
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      background: rgba(0,0,0,0.5);
-
-      &.hidden{
-        display: none;
+      .notes-grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        margin: 20px 0;
       }
-    }
 
-    .modal-content{
-      background: #fff;
-      padding: 20px;
-      max-width: 500px;
-      width: 90%;
-      border-radius: 10px;
-    }
+      .note {
+        background: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        position: relative;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
-    #modalTitle{
-      width: 100%;
-      margin-bottom: 10px;
-    }
+        & h2 {
+          margin: 0 0 10px;
+          color: #2d3436;
+        }
 
-    #modalContent{
-      width: 100%;
-      margin-bottom: 10px;
-      height: 150px;
-    }
+        & p {
+          margin: 0;
+          color: #4b6584;
+        }
 
-    .modal-buttons{
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
+        & button {
+          padding: 5px 10px;
+          margin: 5px;
+          background-color: #e55039;
 
-    #saveBtn{
-      background-color: #00b894;
-
-      &:hover{
-        background-color: #009975;
+          &:hover {
+            background-color: #b33939;
+          }
+        }
       }
-    }
 
-    @media (max-width: 600px){
-      .notes-grid{
-        grid-template-columns: 1fr;
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.5);
+
+        &.hidden {
+          display: none;
+        }
       }
-      #searchBtn{
-        width: 200px;
+
+      .modal-content {
+        background: #fff;
+        padding: 20px;
+        max-width: 500px;
+        width: 90%;
+        border-radius: 10px;
       }
-    }
 
+      #modalTitle {
+        width: 100%;
+        margin-bottom: 10px;
+      }
 
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Note Taking App</h1>
-    <div class="controls">
-      <input type="text" id="searchInput" placeholder="Search Note...">
-      <button id="addBtn">Add Note</button>
-    </div>
-    <div class="notes-grid" id="notesGrid"></div>
-    <div class="modal hidden" id="modal">
-    <div class="modal-content">
-      <h2>Edit Note</h2>
-      <input type="text" id="modalTitle" placeholder="Note Title">
-      <textarea name="input" id="modalContent" placeholder="Note Content"></textarea>
-      <div class="modal-buttons">
-        <button id="saveBtn">Save</button>
-        <button id="cancelBtn">Cancel</button>
+      #modalContent {
+        width: 100%;
+        margin-bottom: 10px;
+        height: 150px;
+      }
+
+      .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      #saveBtn {
+        background-color: #00b894;
+
+        &:hover {
+          background-color: #009975;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .notes-grid {
+          grid-template-columns: 1fr;
+        }
+        #searchBtn {
+          width: 200px;
+        }
+      }
+
+      #buttonq {
+        color: black;
+        margin-top: 25px;
+        outline: 0;
+        grid-gap: 8px;
+        align-items: center;
+        background: 0 0;
+        border: 1px solid #000;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        flex-shrink: 0;
+        font-size: 16px;
+        gap: 8px;
+        justify-content: center;
+        line-height: 1.5;
+        overflow: hidden;
+        padding: 12px 16px;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        transition: all 0.14s ease-out;
+        white-space: nowrap;
+        &:hover {
+          box-shadow: 4px 4px 0 #000;
+          transform: translate(-4px, -4px);
+        }
+        &:focus-visible {
+          outline-offset: 1px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button id="buttonq">home</button>
+      <h1>Note Taking App</h1>
+      <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search Note..." />
+        <button id="addBtn">Add Note</button>
+      </div>
+      <div class="notes-grid" id="notesGrid"></div>
+      <div class="modal hidden" id="modal">
+        <div class="modal-content">
+          <h2>Edit Note</h2>
+          <input type="text" id="modalTitle" placeholder="Note Title" />
+          <textarea
+            name="input"
+            id="modalContent"
+            placeholder="Note Content"
+          ></textarea>
+          <div class="modal-buttons">
+            <button id="saveBtn">Save</button>
+            <button id="cancelBtn">Cancel</button>
+          </div>
+        </div>
       </div>
     </div>
-    </div>
-  </div>
-  <script>
-    const searchInput=document.getElementById('searchInput');
-    const addBtn=document.getElementById('addBtn');
-    const notesGrid=document.getElementById('notesGrid');
-    const modal=document.getElementById('modal');
-    const modalTitle=document.getElementById('modalTitle');
-    const modalContent=document.getElementById('modalContent');
-    const saveBtn=document.getElementById('saveBtn');
-    const cancelBtn=document.getElementById('cancelBtn');
+    <script>
+      const searchInput = document.getElementById("searchInput");
+      const addBtn = document.getElementById("addBtn");
+      const notesGrid = document.getElementById("notesGrid");
+      const modal = document.getElementById("modal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalContent = document.getElementById("modalContent");
+      const saveBtn = document.getElementById("saveBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const button = document.getElementById("buttonq");
 
-    let notes = JSON.parse(localStorage.getItem('notes')) || [];
-    let editingId = null;
+      button.addEventListener("click", () => {
+        location.href = "/index.html";
+      });
 
+      let notes = JSON.parse(localStorage.getItem("notes")) || [];
+      let editingId = null;
 
-    function renderNotes(filter=''){
-      notesGrid.innerHTML='';
-      const filterNotes=notes.filter(note => 
-        note.title.toLowerCase().includes(filter.toLowerCase()) || note.content.toLowerCase().includes(filter.toLowerCase()) );
+      function renderNotes(filter = "") {
+        notesGrid.innerHTML = "";
+        const filterNotes = notes.filter(
+          (note) =>
+            note.title.toLowerCase().includes(filter.toLowerCase()) ||
+            note.content.toLowerCase().includes(filter.toLowerCase())
+        );
 
-        filterNotes.forEach(note => {
-          const div=document.createElement('div');
-          div.className='note';
-          div.innerHTML=`
-          <h3>${note.title || 'untitled'}</h3>
-          <p>${note.content || 'No Content'}</p>
+        filterNotes.forEach((note) => {
+          const div = document.createElement("div");
+          div.className = "note";
+          div.innerHTML = `
+          <h3>${note.title || "untitled"}</h3>
+          <p>${note.content || "No Content"}</p>
           <button onclick="editNote(${note.id})">Edit</button>
            <button onclick="deleteNote(${note.id})">Delete</button>
           `;
           notesGrid.appendChild(div);
         });
-    }
-
-
-     function openModal(id = null){
-       editingId=id;
-       if (id) {
-        const note=notes.find(n => n.id === id);
-        modalTitle.value=note.title;
-        modalContent.value=note.content;
-       } else {
-        modalTitle.value="";
-        modalContent.value="";
-       }
-       modal.classList.remove('hidden');
-     }
-
-     addBtn.addEventListener('click', ()=> openModal());
-
-    saveBtn.addEventListener('click', ()=> {
-      const title=modalTitle.value.trim();
-      const content=modalContent.value.trim();
-      if (!title && !content) {
-        alert('Please enter a title or content')
-        return
       }
-      
-      if (editingId) {
-        notes = notes.map(note => note.id===editingId? {...note, title, content} : note);
-      } else {
-        notes.push({
-          id: Date.now(),
-          title,
-          content
-        });
+
+      function openModal(id = null) {
+        editingId = id;
+        if (id) {
+          const note = notes.find((n) => n.id === id);
+          modalTitle.value = note.title;
+          modalContent.value = note.content;
+        } else {
+          modalTitle.value = "";
+          modalContent.value = "";
+        }
+        modal.classList.remove("hidden");
       }
-      localStorage.setItem('notes', JSON.stringify(notes));
-      modal.classList.add('hidden');
-      renderNotes(searchInput.value);
-    });
 
-    function editNote(id){
-      openModal(id);
-    }
-      
-    function deleteNote(id){
-      notes=notes.filter(note => note.id !== id);
-      localStorage.setItem('notes', JSON.stringify(notes));
-      renderNotes(searchInput.value);
-    }
+      addBtn.addEventListener("click", () => openModal());
 
-    cancelBtn.addEventListener('click', ()=> {
-       modal.classList.add('hidden');
-    });
+      saveBtn.addEventListener("click", () => {
+        const title = modalTitle.value.trim();
+        const content = modalContent.value.trim();
+        if (!title && !content) {
+          alert("Please enter a title or content");
+          return;
+        }
 
-    searchInput.addEventListener('input', ()=> {
-      renderNotes(searchInput.value);
-    });
+        if (editingId) {
+          notes = notes.map((note) =>
+            note.id === editingId ? { ...note, title, content } : note
+          );
+        } else {
+          notes.push({
+            id: Date.now(),
+            title,
+            content,
+          });
+        }
+        localStorage.setItem("notes", JSON.stringify(notes));
+        modal.classList.add("hidden");
+        renderNotes(searchInput.value);
+      });
 
-    window.addEventListener('keydown', (e) => {
-     if (e.key === 'Escape') {
-      modal.classList.add('hidden');
+      function editNote(id) {
+        openModal(id);
       }
-     });
 
+      function deleteNote(id) {
+        notes = notes.filter((note) => note.id !== id);
+        localStorage.setItem("notes", JSON.stringify(notes));
+        renderNotes(searchInput.value);
+      }
 
-   renderNotes();    
-  </script>
-</body>
+      cancelBtn.addEventListener("click", () => {
+        modal.classList.add("hidden");
+      });
+
+      searchInput.addEventListener("input", () => {
+        renderNotes(searchInput.value);
+      });
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          modal.classList.add("hidden");
+        }
+      });
+
+      renderNotes();
+    </script>
+  </body>
 </html>

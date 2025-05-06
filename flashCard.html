@@ -1,250 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flash Card Study App</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to right, #dfe6e9, #b2bec3);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .container {
-      background-color: #ffffff;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-      width: 90%;
-      max-width: 600px;
-      text-align: center;
-    }
-
-    h1 {
-      margin-bottom: 10px;
-      color: #2d3436;
-    }
-
-    .progress {
-      font-size: 18px;
-      margin-bottom: 20px;
-      color: #636e72;
-    }
-
-    .flashcard {
-      perspective: 1000px;
-      height: 220px;
-    }
-
-    .card-content {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transition: transform 0.6s;
-      transform-style: preserve-3d;
-      background-color: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      color: #2d3436;
-      cursor: pointer;
-    }
-
-    .card-content.flipped {
-      transform: rotateY(180deg);
-    }
-
-    .card-content::before,
-    .card-content::after {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      box-sizing: border-box;
-      backface-visibility: hidden;
-    }
-
-    .card-content::before {
-      content: attr(data-question);
-    }
-
-    .card-content::after {
-      content: attr(data-answer);
-      transform: rotateY(180deg);
-    }
-
-    .controls, .status {
-      margin-top: 20px;
-    }
-
-    button {
-      margin: 5px;
-      padding: 10px 20px;
-      border: none;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      color: #fff;
-      transition: background 0.3s ease;
-    }
-
-    #prevBtn, #nextBtn {
-      background-color: #6c5ce7;
-    }
-
-    #prevBtn:hover, #nextBtn:hover {
-      background-color: #341f97;
-    }
-
-    #flipBtn {
-      background-color: #00cec9;
-    }
-
-    #flipBtn:hover {
-      background-color: #009688;
-    }
-
-    #knownBtn {
-      background-color: #00b894;
-    }
-
-    #knownBtn:hover {
-      background-color: #008b62;
-    }
-
-    #reviewBtn {
-      background-color: #d63031;
-    }
-
-    #reviewBtn:hover {
-      background-color: #b71c1c;
-    }
-
-    #resetBtn {
-      background-color: #636e72;
-    }
-
-    #resetBtn:hover {
-      background-color: #2d3436;
-    }
-
-    @media(max-width: 600px) {
-      .card-content {
-        font-size: 18px;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flash Card Study App</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(to right, #dfe6e9, #b2bec3);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>📚 Flash Card Study</h1>
-    <div class="progress">
-      Known: <span id="knownCount">0</span> / <span id="totalCount">0</span>
+
+      .container {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        width: 90%;
+        max-width: 600px;
+        text-align: center;
+      }
+
+      h1 {
+        margin-bottom: 10px;
+        color: #2d3436;
+      }
+
+      .progress {
+        font-size: 18px;
+        margin-bottom: 20px;
+        color: #636e72;
+      }
+
+      .flashcard {
+        perspective: 1000px;
+        height: 220px;
+      }
+
+      .card-content {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        color: #2d3436;
+        cursor: pointer;
+      }
+
+      .card-content.flipped {
+        transform: rotateY(180deg);
+      }
+
+      .card-content::before,
+      .card-content::after {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+        backface-visibility: hidden;
+      }
+
+      .card-content::before {
+        content: attr(data-question);
+      }
+
+      .card-content::after {
+        content: attr(data-answer);
+        transform: rotateY(180deg);
+      }
+
+      .controls,
+      .status {
+        margin-top: 20px;
+      }
+
+      button {
+        margin: 5px;
+        padding: 10px 20px;
+        border: none;
+        font-size: 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        color: #fff;
+        transition: background 0.3s ease;
+      }
+
+      #prevBtn,
+      #nextBtn {
+        background-color: #6c5ce7;
+      }
+
+      #prevBtn:hover,
+      #nextBtn:hover {
+        background-color: #341f97;
+      }
+
+      #flipBtn {
+        background-color: #00cec9;
+      }
+
+      #flipBtn:hover {
+        background-color: #009688;
+      }
+
+      #knownBtn {
+        background-color: #00b894;
+      }
+
+      #knownBtn:hover {
+        background-color: #008b62;
+      }
+
+      #reviewBtn {
+        background-color: #d63031;
+      }
+
+      #reviewBtn:hover {
+        background-color: #b71c1c;
+      }
+
+      #resetBtn {
+        background-color: #636e72;
+      }
+
+      #resetBtn:hover {
+        background-color: #2d3436;
+      }
+
+      @media (max-width: 600px) {
+        .card-content {
+          font-size: 18px;
+        }
+      }
+
+      #buttonq {
+        color: black;
+        margin-top: 25px;
+        outline: 0;
+        grid-gap: 8px;
+        align-items: center;
+        background: 0 0;
+        border: 1px solid #000;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        flex-shrink: 0;
+        font-size: 16px;
+        gap: 8px;
+        justify-content: center;
+        line-height: 1.5;
+        overflow: hidden;
+        padding: 12px 16px;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        transition: all 0.14s ease-out;
+        white-space: nowrap;
+        &:hover {
+          box-shadow: 4px 4px 0 #000;
+          transform: translate(-4px, -4px);
+        }
+        &:focus-visible {
+          outline-offset: 1px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button id="buttonq">home</button>
+    <div class="container">
+      <h1>📚 Flash Card Study</h1>
+      <div class="progress">
+        Known: <span id="knownCount">0</span> / <span id="totalCount">0</span>
+      </div>
+      <div class="flashcard" id="flashcard">
+        <div class="card-content"></div>
+      </div>
+      <div class="controls">
+        <button id="prevBtn">⏪ Previous</button>
+        <button id="flipBtn">🔄 Flip</button>
+        <button id="nextBtn">⏩ Next</button>
+      </div>
+      <div class="status">
+        <button id="knownBtn">✅ Known</button>
+        <button id="reviewBtn">🔁 Review</button>
+      </div>
+      <button id="resetBtn">🔄 Reset Progress</button>
     </div>
-    <div class="flashcard" id="flashcard">
-      <div class="card-content"></div>
-    </div>
-    <div class="controls">
-      <button id="prevBtn">⏪ Previous</button>
-      <button id="flipBtn">🔄 Flip</button>
-      <button id="nextBtn">⏩ Next</button>
-    </div>
-    <div class="status">
-      <button id="knownBtn">✅ Known</button>
-      <button id="reviewBtn">🔁 Review</button>
-    </div>
-    <button id="resetBtn">🔄 Reset Progress</button>
-  </div>
 
-  <script>
-    const knownCount = document.getElementById('knownCount');
-    const totalCount = document.getElementById('totalCount');
-    const flashcard = document.getElementById('flashcard');
-    const cardContent = document.querySelector('.card-content');
-    const prevBtn = document.getElementById('prevBtn');
-    const flipBtn = document.getElementById('flipBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const knownBtn = document.getElementById('knownBtn');
-    const reviewBtn = document.getElementById('reviewBtn');
-    const resetBtn = document.getElementById('resetBtn');
+    <script>
+      const knownCount = document.getElementById("knownCount");
+      const totalCount = document.getElementById("totalCount");
+      const flashcard = document.getElementById("flashcard");
+      const cardContent = document.querySelector(".card-content");
+      const prevBtn = document.getElementById("prevBtn");
+      const flipBtn = document.getElementById("flipBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const knownBtn = document.getElementById("knownBtn");
+      const reviewBtn = document.getElementById("reviewBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const button = document.getElementById("buttonq");
 
-    const flashcards = [
-      { question: 'What is JavaScript?', answer: 'A programming language for web development.', known: false },
-      { question: 'What is CSS?', answer: 'Cascading Style Sheets used for styling web pages.', known: false },
-      { question: 'What is HTML?', answer: 'HyperText Markup Language.', known: false },
-      { question: 'What is an API?', answer: 'Application Programming Interface.', known: false },
-      { question: 'What does DOM stand for?', answer: 'Document Object Model.', known: false },
-      { question: 'What is a variable?', answer: 'A container for storing data values.', known: false },
-      { question: 'What is a function in JS?', answer: 'A block of code designed to perform a task.', known: false },
-      { question: 'What is a loop?', answer: 'A way to repeat code a number of times.', known: false },
-      { question: 'What is React?', answer: 'A JavaScript library for building user interfaces.', known: false },
-      { question: 'What is Git?', answer: 'A version control system for tracking changes.', known: false },
-    ];
+      button.addEventListener("click", () => {
+        location.href = "/index.html";
+      });
 
-    let currentIndex = 0;
-    let deck = JSON.parse(localStorage.getItem('flashcards')) || flashcards;
+      const flashcards = [
+        {
+          question: "What is JavaScript?",
+          answer: "A programming language for web development.",
+          known: false,
+        },
+        {
+          question: "What is CSS?",
+          answer: "Cascading Style Sheets used for styling web pages.",
+          known: false,
+        },
+        {
+          question: "What is HTML?",
+          answer: "HyperText Markup Language.",
+          known: false,
+        },
+        {
+          question: "What is an API?",
+          answer: "Application Programming Interface.",
+          known: false,
+        },
+        {
+          question: "What does DOM stand for?",
+          answer: "Document Object Model.",
+          known: false,
+        },
+        {
+          question: "What is a variable?",
+          answer: "A container for storing data values.",
+          known: false,
+        },
+        {
+          question: "What is a function in JS?",
+          answer: "A block of code designed to perform a task.",
+          known: false,
+        },
+        {
+          question: "What is a loop?",
+          answer: "A way to repeat code a number of times.",
+          known: false,
+        },
+        {
+          question: "What is React?",
+          answer: "A JavaScript library for building user interfaces.",
+          known: false,
+        },
+        {
+          question: "What is Git?",
+          answer: "A version control system for tracking changes.",
+          known: false,
+        },
+      ];
 
-    function updateCard() {
-      const card = deck[currentIndex];
-      cardContent.setAttribute('data-question', card.question);
-      cardContent.setAttribute('data-answer', card.answer);
-      cardContent.classList.remove('flipped');
-      updateProgress();
-    }
+      let currentIndex = 0;
+      let deck = JSON.parse(localStorage.getItem("flashcards")) || flashcards;
 
-    function updateProgress() {
-      const known = deck.filter(card => card.known).length;
-      knownCount.textContent = known;
-      totalCount.textContent = deck.length;
-      localStorage.setItem('flashcards', JSON.stringify(deck));
-    }
+      function updateCard() {
+        const card = deck[currentIndex];
+        cardContent.setAttribute("data-question", card.question);
+        cardContent.setAttribute("data-answer", card.answer);
+        cardContent.classList.remove("flipped");
+        updateProgress();
+      }
 
-    flipBtn.addEventListener('click', () => {
-      cardContent.classList.toggle('flipped');
-    });
+      function updateProgress() {
+        const known = deck.filter((card) => card.known).length;
+        knownCount.textContent = known;
+        totalCount.textContent = deck.length;
+        localStorage.setItem("flashcards", JSON.stringify(deck));
+      }
 
-    prevBtn.addEventListener('click', () => {
-      currentIndex = (currentIndex - 1 + deck.length) % deck.length;
+      flipBtn.addEventListener("click", () => {
+        cardContent.classList.toggle("flipped");
+      });
+
+      prevBtn.addEventListener("click", () => {
+        currentIndex = (currentIndex - 1 + deck.length) % deck.length;
+        updateCard();
+      });
+
+      nextBtn.addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % deck.length;
+        updateCard();
+      });
+
+      knownBtn.addEventListener("click", () => {
+        deck[currentIndex].known = true;
+        updateProgress();
+        nextBtn.click();
+      });
+
+      reviewBtn.addEventListener("click", () => {
+        deck[currentIndex].known = false;
+        updateProgress();
+        nextBtn.click();
+      });
+
+      resetBtn.addEventListener("click", () => {
+        deck = flashcards.map((card) => ({ ...card, known: false }));
+        currentIndex = 0;
+        localStorage.setItem("flashcards", JSON.stringify(deck));
+        updateCard();
+      });
+
       updateCard();
-    });
-
-    nextBtn.addEventListener('click', () => {
-      currentIndex = (currentIndex + 1) % deck.length;
-      updateCard();
-    });
-
-    knownBtn.addEventListener('click', () => {
-      deck[currentIndex].known = true;
-      updateProgress();
-      nextBtn.click();
-    });
-
-    reviewBtn.addEventListener('click', () => {
-      deck[currentIndex].known = false;
-      updateProgress();
-      nextBtn.click();
-    });
-
-    resetBtn.addEventListener('click', () => {
-      deck = flashcards.map(card => ({ ...card, known: false }));
-      currentIndex = 0;
-      localStorage.setItem('flashcards', JSON.stringify(deck));
-      updateCard();
-    });
-
-    updateCard();
-  </script>
-</body>
+    </script>
+  </body>
 </html>

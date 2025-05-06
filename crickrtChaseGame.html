@@ -1,152 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cricket Chase Game</title>
-  <style>
-    body {
-      font-family: Verdana, Geneva, Tahoma, sans-serif;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #f4f4f4;
-    }
-    .container {
-      background: white;
-      text-align: center;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-      width: 350px;
-    }
-    button {
-      padding: 10px 15px;
-      font-size: 16px;
-      background: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-      margin: 10px auto;
-      display: inline-flex; 
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-    button:disabled {
-      background: gray;
-      cursor: not-allowed;
-    }
-    button img {
-      width: 20px;
-      height: 20px;
-    }
-    #gameStatus {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    .scoreboard {
-      margin-top: 15px;
-      background: #e3e3e3;
-      padding: 10px;
-      border-radius: 5px;
-    }
-    .scoreboard h3 {
-      margin-bottom: 5px;
-    }
-    .balls {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 5px;
-    }
-    .ball {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      background: white;
-      border: 1px solid black;
-    }
-    .wicket {
-      background: red;
-      color: white;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>Cricket Target Chase Game</h2>
-    <div>Target: <span id="targetScore">50</span></div>
-    <div>Balls Remaining: <span id="ballsLeft">18</span></div>
-    <div>Your Score: <span id="yourScore">0</span></div>
-    <button id="batBtn">
-      <img src="cricket-bat-clipart-md.png" alt="Bat">
-      Hit Ball
-    </button>
-    
-    <div id="gameStatus">Game on</div>
-    <div class="scoreboard">
-      <h3>Scoreboard</h3>
-      <div class="balls" id="scoreboard"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cricket Chase Game</title>
+    <style>
+      body {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f4f4f4;
+      }
+      .container {
+        background: white;
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        width: 350px;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 16px;
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        margin: 10px auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      button:disabled {
+        background: gray;
+        cursor: not-allowed;
+      }
+      button img {
+        width: 20px;
+        height: 20px;
+      }
+      #gameStatus {
+        font-weight: bold;
+        margin-top: 10px;
+      }
+      .scoreboard {
+        margin-top: 15px;
+        background: #e3e3e3;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .scoreboard h3 {
+        margin-bottom: 5px;
+      }
+      .balls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+      }
+      .ball {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        background: white;
+        border: 1px solid black;
+      }
+      .wicket {
+        background: red;
+        color: white;
+      }
+
+      #buttonq {
+        color: black;
+        margin-top: 25px;
+        outline: 0;
+        grid-gap: 8px;
+        align-items: center;
+        background: 0 0;
+        border: 1px solid #000;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        flex-shrink: 0;
+        font-size: 16px;
+        gap: 8px;
+        justify-content: center;
+        line-height: 1.5;
+        overflow: hidden;
+        padding: 12px 16px;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        transition: all 0.14s ease-out;
+        white-space: nowrap;
+        &:hover {
+          box-shadow: 4px 4px 0 #000;
+          transform: translate(-4px, -4px);
+        }
+        &:focus-visible {
+          outline-offset: 1px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button id="buttonq">home</button>
+      <h2>Cricket Target Chase Game</h2>
+      <div>Target: <span id="targetScore">50</span></div>
+      <div>Balls Remaining: <span id="ballsLeft">18</span></div>
+      <div>Your Score: <span id="yourScore">0</span></div>
+      <button id="batBtn">
+        <img src="cricket-bat-clipart-md.png" alt="Bat" />
+        Hit Ball
+      </button>
+
+      <div id="gameStatus">Game on</div>
+      <div class="scoreboard">
+        <h3>Scoreboard</h3>
+        <div class="balls" id="scoreboard"></div>
+      </div>
     </div>
-  </div>
 
-  <script>
-    document.getElementById("batBtn").addEventListener("click", hitBall);
+    <script>
+      document.getElementById("batBtn").addEventListener("click", hitBall);
+      const button = document.getElementById("buttonq");
 
-    const targetScore = 50;
-    let yourScore = 0;
-    let ballsLeft = 18;
-    const scoreboard = document.getElementById("scoreboard");
+      button.addEventListener("click", () => {
+        location.href = "/index.html";
+      });
 
-    function hitBall() {
-      if (ballsLeft <= 0) {
-        endGame("You've run out of balls!");
-        return;
-      }
+      const targetScore = 50;
+      let yourScore = 0;
+      let ballsLeft = 18;
+      const scoreboard = document.getElementById("scoreboard");
 
-      const runs = Math.floor(Math.random() * 7);
-      ballsLeft--;
-      document.getElementById("ballsLeft").textContent = ballsLeft;
+      function hitBall() {
+        if (ballsLeft <= 0) {
+          endGame("You've run out of balls!");
+          return;
+        }
 
+        const runs = Math.floor(Math.random() * 7);
+        ballsLeft--;
+        document.getElementById("ballsLeft").textContent = ballsLeft;
 
-      const ballElement = document.createElement("div");
-      ballElement.classList.add("ball");
-      ballElement.textContent = runs === 0 ? "W" : runs;
-      if (runs === 0) {
-        ballElement.classList.add("wicket");
-        endGame("You got out!");
+        const ballElement = document.createElement("div");
+        ballElement.classList.add("ball");
+        ballElement.textContent = runs === 0 ? "W" : runs;
+        if (runs === 0) {
+          ballElement.classList.add("wicket");
+          endGame("You got out!");
+          scoreboard.appendChild(ballElement);
+          return;
+        }
+
+        yourScore += runs;
+        document.getElementById("yourScore").textContent = yourScore;
         scoreboard.appendChild(ballElement);
-        return;
+
+        if (yourScore >= targetScore) {
+          endGame("Congratulations! You've won the game!");
+          return;
+        }
+
+        if (ballsLeft === 0 && yourScore < targetScore) {
+          endGame("Game over! You couldn't meet the target score.");
+        }
       }
 
-      yourScore += runs;
-      document.getElementById("yourScore").textContent = yourScore;
-      scoreboard.appendChild(ballElement);
-
-      if (yourScore >= targetScore) {
-        endGame("Congratulations! You've won the game!");
-        return;
+      function endGame(message) {
+        document.getElementById("gameStatus").textContent = message;
+        document.getElementById("batBtn").disabled = true;
       }
-
-      if (ballsLeft === 0 && yourScore < targetScore) {
-        endGame("Game over! You couldn't meet the target score.");
-      }
-    }
-
-    function endGame(message) {
-      document.getElementById("gameStatus").textContent = message;
-      document.getElementById("batBtn").disabled = true;
-    }
-  </script>
-</body>
+    </script>
+  </body>
 </html>

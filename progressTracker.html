@@ -1,139 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Custom Progress Tracker</title>
-  <style>
-    body{
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-      background-color: #dfe6e9;
-    }
-
-    .container{
-      text-align: center;
-    }
-
-    h1{
-      color: #2d3436;
-    }
-
-    .input-group{
-      margin: 10px 0;
-    }
-
-    input{
-      padding: 8px ;
-      font-size: 16px;
-      margin: 5px;
-      border: 1px solid #b2bec3;
-      border-radius: 5px;
-    }
-
-    button{
-      padding: 8px 16px;
-      font-size: 16px;
-      background-color: #00b894;
-      color: white;
-      border-radius: 5px;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover{
-      background-color: #009975;
-    }
-
-    .progress-circle{
-      margin: 20px 0;
-    }
-
-    .track{
-      fill: none;
-      stroke: #b2bec3;
-      stroke-width: 10;
-    }
-
-    .progress{
-      fill: none;
-      stroke: #00b894;
-      stroke-width: 10;
-      stroke-linecap: round;
-      transform: rotate(-90deg);
-      transform-origin: 50% 50%;
-      transition: stroke-dashoffset 0.5s ease;
-    }
-
-    p{
-      font-size: 18px;
-      color: #2d3436;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Custom Progress Tracker</h1>
-    <div class="input-group">
-      <input type="text" name="text" id="goalName" placeholder="Enter your goal">
-      <input type="number" name="num" id="goalTotal" placeholder="Total Amount" min="1">
-    </div>
-    <div class="input-group">
-      <input type="number" name="num1" id="progressInput" placeholder="Current Progress" min="0">
-      <button id="updateBtn">Update Progress</button>
-    </div>
-    <svg width="200" height="200" class="progress-circle">
-     <circle cx="100" cy="100" r="90" class="track" />
-     <circle cx="100" cy="100" r="90" class="progress" />
-    </svg>
-    <p id="progressText">0% Complete</p>
-  </div>
-  <script>
-    const goalNameInput=document.getElementById("goalName");
-    const goalTotalInput=document.getElementById("goalTotal");
-    const progressInput=document.getElementById("progressInput");
-    const progressCircle=document.querySelector(".progress");
-    const progressText=document.getElementById("progressText");
-    const updateBtn=document.getElementById("updateBtn");
-
-    const radius=90;
-    const circumference=2* Math.PI * radius;
-    progressCircle.style.strokeDasharray=circumference;
-    progressCircle.style.strokeDashoffset=circumference;
-
-    updateBtn.addEventListener("click", updateProgress);
-
-    function updateProgress(){
-      const goalTotal=parseFloat(goalTotalInput.value);
-      const goalName=goalNameInput.value;
-      const currentProgress=parseFloat(progressInput.value);
-
-      if (!goalName || isNaN(goalTotal) || goalTotal<0) {
-        progressText.textContent="Enter a Valid Goal and Total";
-        return;
-      }
-      
-      if (isNaN(currentProgress) || currentProgress < 0) {
-        progressText.textContent="Enter a Valid Progress!";
-        return;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Progress Tracker</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+          "Lucida Sans", Arial, sans-serif;
+        background-color: #dfe6e9;
       }
 
-      if (currentProgress > goalTotal) {
-      progressText.textContent = "Progress can't exceed the goal total!";
-      return;
-    }
+      .container {
+        text-align: center;
+      }
 
-      const cappedProgress= Math.min(currentProgress, goalTotal);
-      const percentage=(cappedProgress / goalTotal) * 100;
-      const offset= circumference - (percentage / 100) * circumference;
+      h1 {
+        color: #2d3436;
+      }
 
-      progressCircle.style.strokeDashoffset=offset;
-      progressText.textContent=`${goalName}: ${Math.round(percentage)}% Complete`;
-    }
-  </script>
-</body>
+      .input-group {
+        margin: 10px 0;
+      }
+
+      input {
+        padding: 8px;
+        font-size: 16px;
+        margin: 5px;
+        border: 1px solid #b2bec3;
+        border-radius: 5px;
+      }
+
+      button {
+        padding: 8px 16px;
+        font-size: 16px;
+        background-color: #00b894;
+        color: white;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #009975;
+      }
+
+      .progress-circle {
+        margin: 20px 0;
+      }
+
+      .track {
+        fill: none;
+        stroke: #b2bec3;
+        stroke-width: 10;
+      }
+
+      .progress {
+        fill: none;
+        stroke: #00b894;
+        stroke-width: 10;
+        stroke-linecap: round;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+        transition: stroke-dashoffset 0.5s ease;
+      }
+
+      p {
+        font-size: 18px;
+        color: #2d3436;
+      }
+
+      #buttonq {
+        color: black;
+        margin-top: 25px;
+        outline: 0;
+        grid-gap: 8px;
+        align-items: center;
+        background: 0 0;
+        border: 1px solid #000;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        flex-shrink: 0;
+        font-size: 16px;
+        gap: 8px;
+        justify-content: center;
+        line-height: 1.5;
+        overflow: hidden;
+        padding: 12px 16px;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        transition: all 0.14s ease-out;
+        white-space: nowrap;
+        &:hover {
+          box-shadow: 4px 4px 0 #000;
+          transform: translate(-4px, -4px);
+        }
+        &:focus-visible {
+          outline-offset: 1px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button id="buttonq">home</button>
+      <h1>Custom Progress Tracker</h1>
+      <div class="input-group">
+        <input
+          type="text"
+          name="text"
+          id="goalName"
+          placeholder="Enter your goal"
+        />
+        <input
+          type="number"
+          name="num"
+          id="goalTotal"
+          placeholder="Total Amount"
+          min="1"
+        />
+      </div>
+      <div class="input-group">
+        <input
+          type="number"
+          name="num1"
+          id="progressInput"
+          placeholder="Current Progress"
+          min="0"
+        />
+        <button id="updateBtn">Update Progress</button>
+      </div>
+      <svg width="200" height="200" class="progress-circle">
+        <circle cx="100" cy="100" r="90" class="track" />
+        <circle cx="100" cy="100" r="90" class="progress" />
+      </svg>
+      <p id="progressText">0% Complete</p>
+    </div>
+    <script>
+      const goalNameInput = document.getElementById("goalName");
+      const goalTotalInput = document.getElementById("goalTotal");
+      const progressInput = document.getElementById("progressInput");
+      const progressCircle = document.querySelector(".progress");
+      const progressText = document.getElementById("progressText");
+      const updateBtn = document.getElementById("updateBtn");
+      const button = document.getElementById("buttonq");
+
+      button.addEventListener("click", () => {
+        location.href = "/index.html";
+      });
+
+      const radius = 90;
+      const circumference = 2 * Math.PI * radius;
+      progressCircle.style.strokeDasharray = circumference;
+      progressCircle.style.strokeDashoffset = circumference;
+
+      updateBtn.addEventListener("click", updateProgress);
+
+      function updateProgress() {
+        const goalTotal = parseFloat(goalTotalInput.value);
+        const goalName = goalNameInput.value;
+        const currentProgress = parseFloat(progressInput.value);
+
+        if (!goalName || isNaN(goalTotal) || goalTotal < 0) {
+          progressText.textContent = "Enter a Valid Goal and Total";
+          return;
+        }
+
+        if (isNaN(currentProgress) || currentProgress < 0) {
+          progressText.textContent = "Enter a Valid Progress!";
+          return;
+        }
+
+        if (currentProgress > goalTotal) {
+          progressText.textContent = "Progress can't exceed the goal total!";
+          return;
+        }
+
+        const cappedProgress = Math.min(currentProgress, goalTotal);
+        const percentage = (cappedProgress / goalTotal) * 100;
+        const offset = circumference - (percentage / 100) * circumference;
+
+        progressCircle.style.strokeDashoffset = offset;
+        progressText.textContent = `${goalName}: ${Math.round(
+          percentage
+        )}% Complete`;
+      }
+    </script>
+  </body>
 </html>

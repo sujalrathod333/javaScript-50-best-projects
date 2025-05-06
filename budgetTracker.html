@@ -1,203 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Interactive Budget Tracker</title>
-  <style>
-    body {
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      background-color: #dfe4ea;
-    }
-
-    .container {
-      text-align: center;
-      padding: 20px;
-      max-width: 600px;
-    }
-
-    h1 {
-      color: #2d3436;
-    }
-
-    p {
-      font-size: 16px;
-      color: #2d3436;
-    }
-
-    input, select {
-      padding: 8px;
-      font-size: 16px;
-      margin: 5px;
-      border-radius: 5px;
-      border: 1px solid #ced4da;
-    }
-
-    button {
-      padding: 10px 20px;
-      cursor: pointer;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      font-size: 18px;
-      background-color: #00b894;
-    }
-
-    button:hover {
-      background-color: #009975;
-    }
-
-    .transaction {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #fff;
-      padding: 10px;
-      margin: 5px 0;
-      border-radius: 5px;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-    }
-
-    .transaction.income {
-      border-left: 5px solid #00b894;
-    }
-
-    .transaction.expense {
-      border-left: 5px solid #e55039;
-    }
-
-    .delete-btn {
-      background-color: #e55039;
-      padding: 5px 10px;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-
-    .delete-btn:hover {
-      background-color: #b33939;
-    }
-
-    #chart {
-      margin-top: 20px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Interactive Budget Tracker</h1>
-    <p>Balance: Rs <span id="balance">0.00</span></p>
-    <div class="form">
-      <input type="text" id="description" placeholder="Description" />
-      <input type="number" id="amount" placeholder="Amount" step="1" />
-      <select id="type">
-        <option value="income">Income</option>
-        <option value="expense">Expense</option>
-      </select>
-      <button id="addBtn">Add</button>
-    </div>
-    <div id="transaction-list"></div>
-
-    <canvas id="chart" width="300" height="150"></canvas>
-
-    <script>
-      const balanceDisplay = document.getElementById("balance");
-      const descriptionInput = document.getElementById("description");
-      const amountInput = document.getElementById("amount");
-      const typeSelect = document.getElementById("type");
-      const addBtn = document.getElementById("addBtn");
-      const transactionDiv = document.getElementById("transaction-list");
-      const chartCanvas = document.getElementById("chart");
-      const ctx = chartCanvas.getContext("2d");
-
-      let transactions = [];
-
-      addBtn.addEventListener("click", () => {
-        const description = descriptionInput.value.trim();
-        const amount = parseFloat(amountInput.value);
-        const type = typeSelect.value;
-
-        if (!description || isNaN(amount) || amount <= 0) {
-          alert("Please enter a valid description and amount");
-          return;
-        }
-
-        const transaction = { description, amount, type, id: Date.now() };
-        transactions.push(transaction);
-        updateUI();
-        descriptionInput.value = "";
-        amountInput.value = "";
-      });
-
-      function deleteTransaction(id) {
-        transactions = transactions.filter((t) => t.id !== id);
-        updateUI();
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Budget Tracker</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: #dfe4ea;
       }
 
-      function updateUI() {
-        const balance = transactions.reduce(
-          (acc, t) => (t.type === "income" ? acc + t.amount : acc - t.amount),
-          0
-        );
-        balanceDisplay.textContent = balance.toFixed(2);
+      .container {
+        text-align: center;
+        padding: 20px;
+        max-width: 600px;
+      }
 
-        transactionDiv.innerHTML = "";
-        transactions.forEach((t) => {
-          const div = document.createElement("div");
-          div.className = `transaction ${t.type}`;
-          const span = document.createElement("span");
-          span.textContent = `${t.description}: Rs ${t.amount.toFixed(2)}`;
+      h1 {
+        color: #2d3436;
+      }
 
-          const btn = document.createElement("button");
-          btn.textContent = "Delete";
-          btn.className = "delete-btn";
-          btn.addEventListener("click", () => deleteTransaction(t.id));
+      p {
+        font-size: 16px;
+        color: #2d3436;
+      }
 
-          div.appendChild(span);
-          div.appendChild(btn);
-          transactionDiv.appendChild(div);
+      input,
+      select {
+        padding: 8px;
+        font-size: 16px;
+        margin: 5px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+      }
+
+      button {
+        padding: 10px 20px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 18px;
+        background-color: #00b894;
+      }
+
+      button:hover {
+        background-color: #009975;
+      }
+
+      .transaction {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fff;
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+      }
+
+      .transaction.income {
+        border-left: 5px solid #00b894;
+      }
+
+      .transaction.expense {
+        border-left: 5px solid #e55039;
+      }
+
+      .delete-btn {
+        background-color: #e55039;
+        padding: 5px 10px;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+
+      .delete-btn:hover {
+        background-color: #b33939;
+      }
+
+      #chart {
+        margin-top: 20px;
+      }
+
+      #buttonq {
+        color: black;
+        margin-top: 25px;
+        outline: 0;
+        grid-gap: 8px;
+        align-items: center;
+        background: 0 0;
+        border: 1px solid #000;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        flex-shrink: 0;
+        font-size: 16px;
+        gap: 8px;
+        justify-content: center;
+        line-height: 1.5;
+        overflow: hidden;
+        padding: 12px 16px;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        transition: all 0.14s ease-out;
+        white-space: nowrap;
+        &:hover {
+          box-shadow: 4px 4px 0 #000;
+          transform: translate(-4px, -4px);
+        }
+        &:focus-visible {
+          outline-offset: 1px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button id="buttonq">home</button>
+      <h1>Interactive Budget Tracker</h1>
+      <p>Balance: Rs <span id="balance">0.00</span></p>
+      <div class="form">
+        <input type="text" id="description" placeholder="Description" />
+        <input type="number" id="amount" placeholder="Amount" step="1" />
+        <select id="type">
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
+        <button id="addBtn">Add</button>
+      </div>
+      <div id="transaction-list"></div>
+
+      <canvas id="chart" width="300" height="150"></canvas>
+
+      <script>
+        const balanceDisplay = document.getElementById("balance");
+        const descriptionInput = document.getElementById("description");
+        const amountInput = document.getElementById("amount");
+        const typeSelect = document.getElementById("type");
+        const addBtn = document.getElementById("addBtn");
+        const transactionDiv = document.getElementById("transaction-list");
+        const chartCanvas = document.getElementById("chart");
+        const ctx = chartCanvas.getContext("2d");
+        const button = document.getElementById("buttonq");
+
+        button.addEventListener("click", () => {
+          location.href = "/index.html";
         });
 
-        drawChart();
-      }
+        let transactions = [];
 
-      function drawChart() {
-        const income = transactions
-          .filter((t) => t.type === "income")
-          .reduce((acc, t) => acc + t.amount, 0);
-        const expenses = transactions
-          .filter((t) => t.type === "expense")
-          .reduce((acc, t) => acc + t.amount, 0);
+        addBtn.addEventListener("click", () => {
+          const description = descriptionInput.value.trim();
+          const amount = parseFloat(amountInput.value);
+          const type = typeSelect.value;
 
-        ctx.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
-        const total = income + expenses;
-        if (total === 0) return;
+          if (!description || isNaN(amount) || amount <= 0) {
+            alert("Please enter a valid description and amount");
+            return;
+          }
 
-        const incomeWidth = (income / total) * chartCanvas.width;
-        ctx.fillStyle = "#00b894";
-        ctx.fillRect(0, 0, incomeWidth, chartCanvas.height);
+          const transaction = { description, amount, type, id: Date.now() };
+          transactions.push(transaction);
+          updateUI();
+          descriptionInput.value = "";
+          amountInput.value = "";
+        });
 
-        ctx.fillStyle = "#e55039";
-        ctx.fillRect(incomeWidth, 0, chartCanvas.width - incomeWidth, chartCanvas.height);
+        function deleteTransaction(id) {
+          transactions = transactions.filter((t) => t.id !== id);
+          updateUI();
+        }
 
-        ctx.fillStyle = "#fff";
-        ctx.font = "14px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText(`Income: Rs ${income.toFixed(2)}`, incomeWidth / 2, chartCanvas.height / 2);
-        ctx.fillText(
-          `Expense: Rs ${expenses.toFixed(2)}`,
-          incomeWidth + (chartCanvas.width - incomeWidth) / 2,
-          chartCanvas.height / 2
-        );
-      }
+        function updateUI() {
+          const balance = transactions.reduce(
+            (acc, t) => (t.type === "income" ? acc + t.amount : acc - t.amount),
+            0
+          );
+          balanceDisplay.textContent = balance.toFixed(2);
 
-      updateUI();
-    </script>
-  </div>
-</body>
+          transactionDiv.innerHTML = "";
+          transactions.forEach((t) => {
+            const div = document.createElement("div");
+            div.className = `transaction ${t.type}`;
+            const span = document.createElement("span");
+            span.textContent = `${t.description}: Rs ${t.amount.toFixed(2)}`;
+
+            const btn = document.createElement("button");
+            btn.textContent = "Delete";
+            btn.className = "delete-btn";
+            btn.addEventListener("click", () => deleteTransaction(t.id));
+
+            div.appendChild(span);
+            div.appendChild(btn);
+            transactionDiv.appendChild(div);
+          });
+
+          drawChart();
+        }
+
+        function drawChart() {
+          const income = transactions
+            .filter((t) => t.type === "income")
+            .reduce((acc, t) => acc + t.amount, 0);
+          const expenses = transactions
+            .filter((t) => t.type === "expense")
+            .reduce((acc, t) => acc + t.amount, 0);
+
+          ctx.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
+          const total = income + expenses;
+          if (total === 0) return;
+
+          const incomeWidth = (income / total) * chartCanvas.width;
+          ctx.fillStyle = "#00b894";
+          ctx.fillRect(0, 0, incomeWidth, chartCanvas.height);
+
+          ctx.fillStyle = "#e55039";
+          ctx.fillRect(
+            incomeWidth,
+            0,
+            chartCanvas.width - incomeWidth,
+            chartCanvas.height
+          );
+
+          ctx.fillStyle = "#fff";
+          ctx.font = "14px Arial";
+          ctx.textAlign = "center";
+          ctx.fillText(
+            `Income: Rs ${income.toFixed(2)}`,
+            incomeWidth / 2,
+            chartCanvas.height / 2
+          );
+          ctx.fillText(
+            `Expense: Rs ${expenses.toFixed(2)}`,
+            incomeWidth + (chartCanvas.width - incomeWidth) / 2,
+            chartCanvas.height / 2
+          );
+        }
+
+        updateUI();
+      </script>
+    </div>
+  </body>
 </html>

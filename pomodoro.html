@@ -1,195 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pomodoro Timer</title>
-  <style>
-    body{
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      background-color: #dfe4ea;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pomodoro Timer</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: #dfe4ea;
+      }
 
-    .container{
-      text-align: center;
-    }
+      .container {
+        text-align: center;
+      }
 
-    h1{
-      color: #2d3436;
-    }
+      h1 {
+        color: #2d3436;
+      }
 
-    .timer-ring{
-      transform: rotate(-90deg);
-    }
+      .timer-ring {
+        transform: rotate(-90deg);
+      }
 
-    .track{
-      fill: none;
-      stroke: #ced4da;
-      stroke-width: 10;
-    }
+      .track {
+        fill: none;
+        stroke: #ced4da;
+        stroke-width: 10;
+      }
 
-    .progress{
-      fill: none;
-      stroke: #00b894;
-      stroke-width: 10;
-      stroke-linecap: round;
-      stroke-dasharray: 565.48;
-      stroke-dashoffset: 0;
-      transition: stroke-dashoffset 0.1s linear;
-    }
+      .progress {
+        fill: none;
+        stroke: #00b894;
+        stroke-width: 10;
+        stroke-linecap: round;
+        stroke-dasharray: 565.48;
+        stroke-dashoffset: 0;
+        transition: stroke-dashoffset 0.1s linear;
+      }
 
-    #timerDisplay{
-      font-size: 36px;
-      color: #2d3436;
-      margin: 10px 0;
-    }
+      #timerDisplay {
+        font-size: 36px;
+        color: #2d3436;
+        margin: 10px 0;
+      }
 
-    p{
-      font-size: 18px;
-      color: #2d3436;
-    }
+      p {
+        font-size: 18px;
+        color: #2d3436;
+      }
 
-    .controls{
-      margin: 20px 0;
-    }
+      .controls {
+        margin: 20px 0;
+      }
 
-    button{
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #0984e3;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 0 5px;
-    }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #0984e3;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0 5px;
+      }
 
-   button:hover{
-    background-color: #0652dd;
-   }
+      button:hover {
+        background-color: #0652dd;
+      }
 
-    #pauseBtn{
-      background-color: #e55039;
-    }
+      #pauseBtn {
+        background-color: #e55039;
+      }
 
-    #pauseBtn:hover{
-      background-color: #b33939;
-    }
+      #pauseBtn:hover {
+        background-color: #b33939;
+      }
 
-    #resetBtn{
-      background-color: #3b6584;
-    }
+      #resetBtn {
+        background-color: #3b6584;
+      }
 
-    #resetBtn:hover{
-      background-color: #3867d6;
-    }
+      #resetBtn:hover {
+        background-color: #3867d6;
+      }
 
-
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Podomoro Timer</h1>
-    <svg width="200" height="200" class="timer-ring">
-      <circle cx="100" cy="100" r="90" class="track" />
-      <circle cx="100" cy="100" r="90" class="progress" id="progressRing" />
-    </svg>
-    <div id="timerDisplay">25:00</div>
-    <p>Cycles: <span id="cycleCount">0</span></p>
-    <div class="controls">
-      <button id="startBtn">Start</button>
-      <button id="pauseBtn">Pause</button>
-      <button id="resetBtn">Reset</button>
+      #buttonq {
+        color: black;
+        margin-top: 25px;
+        outline: 0;
+        grid-gap: 8px;
+        align-items: center;
+        background: 0 0;
+        border: 1px solid #000;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        flex-shrink: 0;
+        font-size: 16px;
+        gap: 8px;
+        justify-content: center;
+        line-height: 1.5;
+        overflow: hidden;
+        padding: 12px 16px;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        transition: all 0.14s ease-out;
+        white-space: nowrap;
+        &:hover {
+          box-shadow: 4px 4px 0 #000;
+          transform: translate(-4px, -4px);
+        }
+        &:focus-visible {
+          outline-offset: 1px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button id="buttonq">home</button>
+      <h1>Podomoro Timer</h1>
+      <svg width="200" height="200" class="timer-ring">
+        <circle cx="100" cy="100" r="90" class="track" />
+        <circle cx="100" cy="100" r="90" class="progress" id="progressRing" />
+      </svg>
+      <div id="timerDisplay">25:00</div>
+      <p>Cycles: <span id="cycleCount">0</span></p>
+      <div class="controls">
+        <button id="startBtn">Start</button>
+        <button id="pauseBtn">Pause</button>
+        <button id="resetBtn">Reset</button>
+      </div>
+      <p id="status">Work Time</p>
     </div>
-    <p id="status">Work Time</p>
-  </div>
-  <script>
-    const progressRing=document.getElementById('progressRing');
-    const timerDisplay=document.getElementById('timerDisplay');
-    const cycleCount =document.getElementById('cycleCount');
-    const startBtn=document.getElementById('startBtn');
-    const pauseBtn=document.getElementById('pauseBtn');
-    const resetBtn=document.getElementById('resetBtn');
-    const status=document.getElementById('status');
+    <script>
+      const progressRing = document.getElementById("progressRing");
+      const timerDisplay = document.getElementById("timerDisplay");
+      const cycleCount = document.getElementById("cycleCount");
+      const startBtn = document.getElementById("startBtn");
+      const pauseBtn = document.getElementById("pauseBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const status = document.getElementById("status");
+      const button = document.getElementById("buttonq");
 
-    const WORK_TIME = 25 * 60;
-    const SHORT_BREAK= 5 * 60;
-    const LONG_BREAK=15* 60;
-    let timeLeft= WORK_TIME;
-    let isRunning = false;
-    let timerId= null;
-    let cycles= 0;
-    let isWorkPhase= true;
+      button.addEventListener("click", () => {
+        location.href = "/index.html";
+      });
 
-    function updateDisplay(){
-      const minutes=Math.floor(timeLeft / 60);
-      const seconds = timeLeft % 60;
-      timerDisplay.textContent = `${minutes.toString().padStart(2,0)}:${seconds.toString().padStart(2,0)}`;
+      const WORK_TIME = 25 * 60;
+      const SHORT_BREAK = 5 * 60;
+      const LONG_BREAK = 15 * 60;
+      let timeLeft = WORK_TIME;
+      let isRunning = false;
+      let timerId = null;
+      let cycles = 0;
+      let isWorkPhase = true;
 
-      const totalTime = isWorkPhase ? WORK_TIME : (cycles % 4 ===0 ? LONG_BREAK : SHORT_BREAK);
-      const offset = 565.48 * (1 - timeLeft / totalTime);
-      progressRing.style.strokeDashoffset=offset;
-    }
+      function updateDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerDisplay.textContent = `${minutes
+          .toString()
+          .padStart(2, 0)}:${seconds.toString().padStart(2, 0)}`;
 
-    startBtn.addEventListener('click', ()=>{
-      if (!isRunning) {
-        isRunning= true;
-        timerId = setInterval(()=> {
-          if (timeLeft > 0) {
-            timeLeft--;
-            updateDisplay();
-          } else {
-            clearInterval(timerId);
-            isRunning = false;
-            nextPhase();
-          }
-        }, 1000)
+        const totalTime = isWorkPhase
+          ? WORK_TIME
+          : cycles % 4 === 0
+          ? LONG_BREAK
+          : SHORT_BREAK;
+        const offset = 565.48 * (1 - timeLeft / totalTime);
+        progressRing.style.strokeDashoffset = offset;
       }
-    });
 
-    pauseBtn.addEventListener('click', ()=> {
-      if (isRunning) {
+      startBtn.addEventListener("click", () => {
+        if (!isRunning) {
+          isRunning = true;
+          timerId = setInterval(() => {
+            if (timeLeft > 0) {
+              timeLeft--;
+              updateDisplay();
+            } else {
+              clearInterval(timerId);
+              isRunning = false;
+              nextPhase();
+            }
+          }, 1000);
+        }
+      });
+
+      pauseBtn.addEventListener("click", () => {
+        if (isRunning) {
+          clearInterval(timerId);
+          isRunning = false;
+        }
+      });
+
+      resetBtn.addEventListener("click", () => {
         clearInterval(timerId);
-        isRunning=false;
-      }
-    });
-
-    resetBtn.addEventListener('click', ()=> {
-      clearInterval(timerId);
-      isRunning=false;
-      timeLeft=WORK_TIME;
-      cycles=0;
-      isWorkPhase=true;
-      cycleCount.textContent=cycles;
-      status.textContent = 'Work Time';
-      updateDisplay();
-    });
-
-    function nextPhase(){
-      if (isWorkPhase) {
-        cycles++;
-        cycleCount.textContent=cycles;
-        isWorkPhase=false;
-        timeLeft=cycles % 4 === 0 ? LONG_BREAK : SHORT_BREAK;
-        status.textContent=cycles % 4 === 0 ? "LONG BREAK" : "SHORT BREAK";
-      } else {
-        isWorkPhase=true;
+        isRunning = false;
         timeLeft = WORK_TIME;
-        status.textContent = "WORK TIME";
+        cycles = 0;
+        isWorkPhase = true;
+        cycleCount.textContent = cycles;
+        status.textContent = "Work Time";
+        updateDisplay();
+      });
+
+      function nextPhase() {
+        if (isWorkPhase) {
+          cycles++;
+          cycleCount.textContent = cycles;
+          isWorkPhase = false;
+          timeLeft = cycles % 4 === 0 ? LONG_BREAK : SHORT_BREAK;
+          status.textContent = cycles % 4 === 0 ? "LONG BREAK" : "SHORT BREAK";
+        } else {
+          isWorkPhase = true;
+          timeLeft = WORK_TIME;
+          status.textContent = "WORK TIME";
+        }
+        updateDisplay();
+        if (!isRunning) {
+          startBtn.click();
+        }
       }
+
       updateDisplay();
-      if (!isRunning) {
-        startBtn.click();
-      }
-    }
-
-    updateDisplay();
-
-  </script>
-</body>
+    </script>
+  </body>
 </html>

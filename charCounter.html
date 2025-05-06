@@ -1,93 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Character Counter</title>
-  <style>
-    body{
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #53e0d5;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    }
-    .container{
-      background: rgb(146, 231, 217);
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-      width: 300px;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Character Counter</title>
+    <style>
+      body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #53e0d5;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+          sans-serif;
+      }
+      .container {
+        background: rgb(146, 231, 217);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        width: 300px;
+      }
 
-    textarea{
-      width: 100%;
-      height: 150px;
-      font-size: 18px;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-    p{
-      font-size: 18px;
-    }
-    .warning{
-      color: red;
-      font-weight: bold;
-    }
+      textarea {
+        width: 100%;
+        height: 150px;
+        font-size: 18px;
+        padding: 10px;
+        box-sizing: border-box;
+      }
+      p {
+        font-size: 18px;
+      }
+      .warning {
+        color: red;
+        font-weight: bold;
+      }
 
-.progress-bar{
-  width: 100%;
-  height: 8px;
-  background: #ccc;
-  margin-top: 5px;
-  border-radius: 4px;
-  position: relative;
-}
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #ccc;
+        margin-top: 5px;
+        border-radius: 4px;
+        position: relative;
+      }
 
-#progress{
-      height: 100%;
-      width: 0%;
-      background: green;
-      border-radius: 4px;
-      transition: width 0.3s ease-in-out;
-}
+      #progress {
+        height: 100%;
+        width: 0%;
+        background: green;
+        border-radius: 4px;
+        transition: width 0.3s ease-in-out;
+      }
 
-  </style>
-</head>
-<body>
-  <div class="container">
-  <h2> Character Counter </h2>
-  <textarea id="textInput" oninput="countCharacters()" placeholder="Start typing...."></textarea>
-  <p>Character: <span id="charCount">0</span></p>
-  <div class="progress-bar">
-    <div id="progress"></div>
-  </div>
-  <p id="warningMessage" class="warning"></p>
-</div>
-  <script>
-  let maxchars = 200; 
-  function countCharacters(){
-    let textInput= document.getElementById("textInput");
-    let warning = document.getElementById("warningMessage");
-    let progress = document.getElementById("progress");
-    document.getElementById("charCount").textContent=textInput.value.length;
-    let progressPercent = (textInput.value.length / maxchars) * 100;
-    progress.style.width= progressPercent + "%";
-     
-    if(textInput.value.length>maxchars){
-      textInput.value=textInput.value.substring(0, maxchars) 
-      warning.textContent=`Limit exceeded! Max ${maxchars} characters allowed.`
-      progress.style.background="red"
-    } else if(textInput.value.length>maxchars-20){
-      warning.textContent="You are approaching limiy";
-      progress.style.background="orange";
-    }
-    else {
-      warning.textContent="";
-      progress.style.background="green";
-    }
-  }
-  </script>
-</body>
+      #buttonq {
+        color: black;
+        margin-top: 25px;
+        outline: 0;
+        grid-gap: 8px;
+        align-items: center;
+        background: 0 0;
+        border: 1px solid #000;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        flex-shrink: 0;
+        font-size: 16px;
+        gap: 8px;
+        justify-content: center;
+        line-height: 1.5;
+        overflow: hidden;
+        padding: 12px 16px;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        transition: all 0.14s ease-out;
+        white-space: nowrap;
+        &:hover {
+          box-shadow: 4px 4px 0 #000;
+          transform: translate(-4px, -4px);
+        }
+        &:focus-visible {
+          outline-offset: 1px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button id="buttonq">home</button>
+      <h2>Character Counter</h2>
+      <textarea
+        id="textInput"
+        oninput="countCharacters()"
+        placeholder="Start typing...."
+      ></textarea>
+      <p>Character: <span id="charCount">0</span></p>
+      <div class="progress-bar">
+        <div id="progress"></div>
+      </div>
+      <p id="warningMessage" class="warning"></p>
+    </div>
+    <script>
+      let maxchars = 200;
+      const button = document.getElementById("buttonq");
+
+      button.addEventListener("click", () => {
+        location.href = "/index.html";
+      });
+
+      function countCharacters() {
+        let textInput = document.getElementById("textInput");
+        let warning = document.getElementById("warningMessage");
+        let progress = document.getElementById("progress");
+        document.getElementById("charCount").textContent =
+          textInput.value.length;
+        let progressPercent = (textInput.value.length / maxchars) * 100;
+        progress.style.width = progressPercent + "%";
+
+        if (textInput.value.length > maxchars) {
+          textInput.value = textInput.value.substring(0, maxchars);
+          warning.textContent = `Limit exceeded! Max ${maxchars} characters allowed.`;
+          progress.style.background = "red";
+        } else if (textInput.value.length > maxchars - 20) {
+          warning.textContent = "You are approaching limiy";
+          progress.style.background = "orange";
+        } else {
+          warning.textContent = "";
+          progress.style.background = "green";
+        }
+      }
+    </script>
+  </body>
 </html>

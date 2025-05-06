@@ -1,91 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <style>
-    body{
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0;
-      background-color: antiquewhite;
-      min-height: 100vh;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        background-color: antiquewhite;
+        min-height: 100vh;
+      }
 
-    .container{
-      display: flex;
-     flex-direction: column;
-    }
+      .container {
+        display: flex;
+        flex-direction: column;
+      }
 
-    #box{
-      width: 200px;
-      height: 200px;
-      background: #fff;
-      margin: 20px;
-      border: 1px solid black;
-      text-align: center;
-      
-    }
+      #box {
+        width: 200px;
+        height: 200px;
+        background: #fff;
+        margin: 20px;
+        border: 1px solid black;
+        text-align: center;
+      }
 
-    input{
-     
-      margin: 10px;
-      padding: 5px;
-    }
-  </style>
-</head>
-<body>
-  <div id="box"></div>
-  <div class="container">
-   <h1>Design A Block</h1>
-    <label for="box">Border-Radius:</label>
-    <input type="text" id="inputVal1">
-    <label for="box">Background-Color:</label>
-    <input type="text" id="inputVal2">
-    <label for="box">Width:</label>
-    <input type="text" id="inputVal3">
-    <label for="box">Height:</label>
-    <input type="text" id="inputVal4">
-    <label for="box">Box-Shadow:</label>
-    <input type="text" id="inputVal5">
-    <label for="box">Margin:</label>
-    <input type="text" id="inputVal6">
-  </div>
-  </div>
-  <script>
-    const box=document.getElementById("box");
-    const inputVal1=document.getElementById("inputVal1");
-    const inputVal2=document.getElementById("inputVal2");
-    const inputVal3=document.getElementById("inputVal3");
-    const inputVal4=document.getElementById("inputVal4");
-    const inputVal5=document.getElementById("inputVal5");
-    const inputVal6=document.getElementById("inputVal6");
+      input {
+        margin: 10px;
+        padding: 5px;
+      }
 
-    inputVal1.addEventListener("input", ()=> {
-      box.style.borderRadius=`${inputVal1.value}px`
-    });
+      #buttonq {
+        color: black;
+        margin-top: 25px;
+        outline: 0;
+        grid-gap: 8px;
+        align-items: center;
+        background: 0 0;
+        border: 1px solid #000;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        flex-shrink: 0;
+        font-size: 16px;
+        gap: 8px;
+        justify-content: center;
+        line-height: 1.5;
+        overflow: hidden;
+        padding: 12px 16px;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        transition: all 0.14s ease-out;
+        white-space: nowrap;
+        &:hover {
+          box-shadow: 4px 4px 0 #000;
+          transform: translate(-4px, -4px);
+        }
+        &:focus-visible {
+          outline-offset: 1px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button id="buttonq">home</button>
+    <div id="box"></div>
+    <div class="container">
+      <h1>Design A Block</h1>
+      <label for="box">Border-Radius:</label>
+      <input type="text" id="inputVal1" />
+      <label for="box">Background-Color:</label>
+      <input type="text" id="inputVal2" />
+      <label for="box">Width:</label>
+      <input type="text" id="inputVal3" />
+      <label for="box">Height:</label>
+      <input type="text" id="inputVal4" />
+      <label for="box">Box-Shadow:</label>
+      <input type="text" id="inputVal5" />
+      <label for="box">Margin:</label>
+      <input type="text" id="inputVal6" />
+    </div>
 
-    inputVal2.addEventListener("input", ()=> {
-      box.style.backgroundColor=inputVal2.value;
-    });
+    <script>
+      const box = document.getElementById("box");
+      const inputVal1 = document.getElementById("inputVal1");
+      const inputVal2 = document.getElementById("inputVal2");
+      const inputVal3 = document.getElementById("inputVal3");
+      const inputVal4 = document.getElementById("inputVal4");
+      const inputVal5 = document.getElementById("inputVal5");
+      const inputVal6 = document.getElementById("inputVal6");
+      const button = document.getElementById("buttonq");
 
-    inputVal3.addEventListener("input", ()=> {
-      box.style.width=`${inputVal3.value}px`
-    });
+      button.addEventListener("click", () => {
+        location.href = "/index.html";
+      });
 
-    inputVal4.addEventListener("input", ()=> {
-      box.style.height=`${inputVal4.value}px`
-    });
+      inputVal1.addEventListener("input", () => {
+        box.style.borderRadius = `${inputVal1.value}px`;
+      });
 
-    inputVal5.addEventListener("input", ()=> {
-      box.style.boxShadow=inputVal5.value;
-    });
+      inputVal2.addEventListener("input", () => {
+        box.style.backgroundColor = inputVal2.value;
+      });
 
-    inputVal6.addEventListener("input", ()=> {
-      box.style.margin=`${inputVal6.value}px`
-    });
-  </script>
-</body>
+      inputVal3.addEventListener("input", () => {
+        box.style.width = `${inputVal3.value}px`;
+      });
+
+      inputVal4.addEventListener("input", () => {
+        box.style.height = `${inputVal4.value}px`;
+      });
+
+      inputVal5.addEventListener("input", () => {
+        box.style.boxShadow = inputVal5.value;
+      });
+
+      inputVal6.addEventListener("input", () => {
+        box.style.margin = `${inputVal6.value}px`;
+      });
+    </script>
+  </body>
 </html>

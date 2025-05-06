@@ -1,220 +1,262 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hangman Game</title>
-  <style>
-    body{
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-      background-color: #2f3542;
-      color: #fff;
-    }
-
-    .container{
-      text-align: center;
-    }
-
-    h1{
-      color: #ecf0f1;
-    }
-
-    p{
-      font-size: 18px;
-    }
-
-    #hangmanCanvas{
-      margin: 20px 0;
-    }
-
-    .word-display{
-      font-size: 36px;
-      letter-spacing: 5px;
-      margin: 20px 0;
-      color: #00cc99;
-    }
-
-    input{
-      padding: 8px;
-      font-size: 16px;
-      width: 100px;
-      margin: 10px 0;
-      border: 1px solid #ced4da;
-      border-radius: 5px;
-      background-color: #34495e;
-      color: #fff;
-    }
-
-    button{
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      padding: 10px 20px;
-      font-size: 18px;
-      background-color: #0984e3;
-      color: white;
-      margin: 5px;
-    }
-
-    button:hover{
-      background-color: #0652dd;
-    }
-
-    #newGameBtn{
-      background-color: #00b894;
-    }
-
-    #newGameBtn:hover{
-      background-color: #009975;
-    }
-
-    .message{
-    margin-top: 20px;
-    font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Interactive Hangman</h1>
-    <p>Wins: <span id="wins">0</span></p>
-    <canvas id="hangmanCanvas" width="200" height="200"></canvas>
-    <div id="wordDisplay" class="word-display"></div>
-    <p>Guess Left: <span id="guessLeft">6</span></p>
-    <p>Used Letters: <span id="usedLetters"></span></p>
-    <input type="text" id="guessInput" placeholder="guesss a letter" maxlength="1">
-    <button id="guessBtn">Guess</button>
-    <button id="newGameBtn">New Game</button>
-    <p id="message" class="message"></p>
-  </div>
-  <script>
-    const winsDisplay=document.getElementById('wins');
-    const hangmanCanvas=document.getElementById('hangmanCanvas');
-    const ctx=hangmanCanvas.getContext('2d');
-    const wordDisplay=document.getElementById('wordDisplay');
-    const guessLeftDisplay=document.getElementById('guessLeft');
-    const usedLettersDisplay=document.getElementById('usedLetters');
-    const guessInput=document.getElementById('guessInput');
-    const guessBtn=document.getElementById('guessBtn');
-    const newGameBtn=document.getElementById("newGameBtn");
-    const messageDisplay=document.getElementById('message');
-
-
-    const words =['rocket', 'galaxy', 'planet', 'comet'];
-    let currentWord='';
-    let guessedLetters=[];
-    let wrongGuesses=0;
-    let wins=0;
-    const maxGuesses=6;
-
-    function drawHangman(){
-      ctx.clearRect(0, 0, hangmanCanvas.width, hangmanCanvas.height);
-      ctx.strokeStyle='#ecf0f1';
-      ctx.lineWidth=2;
-
-      if (wrongGuesses >=1) {
-        ctx.strokeRect(50, 150, 100, 10);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hangman Game</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+        background-color: #2f3542;
+        color: #fff;
       }
 
-      if (wrongGuesses >=2) {
-      ctx.beginPath();
-      ctx.moveTo(100, 150);
-      ctx.lineTo(100, 50);
-      ctx.stroke();
-    }
-
-      if (wrongGuesses >=3) {
-        ctx.beginPath();
-        ctx.moveTo(100, 50);
-        ctx.lineTo(150, 50);
-        ctx.stroke();  
+      .container {
+        text-align: center;
       }
 
-      if (wrongGuesses >=4) {
-        ctx.beginPath();
-        ctx.moveTo(150, 50);
-        ctx.lineTo(150, 70);
-        ctx.stroke();  
+      h1 {
+        color: #ecf0f1;
       }
 
-      if (wrongGuesses >=5) {
-        ctx.beginPath();
-        ctx.arc(150, 90, 20, 0, Math.PI * 2);
-        ctx.stroke();
+      p {
+        font-size: 18px;
       }
 
-      if (wrongGuesses >=6) {
-        ctx.beginPath();
-        ctx.moveTo(150, 110);
-        ctx.lineTo(150, 130);
-        ctx.moveTo(150, 130);
-        ctx.lineTo(130, 150);
-        ctx.moveTo(150, 130);
-        ctx.lineTo(170, 150);
-        ctx.moveTo(150, 110);
-        ctx.lineTo(130, 130);
-        ctx.moveTo(150, 110);
-        ctx.lineTo(170, 130);
-        ctx.stroke();
-      }
-    }
-
-    function newGame(){
-      currentWord=words[Math.floor(Math.random() * words.length)];
-      guessedLetters=[];
-      wrongGuesses=0;
-      guessLeftDisplay.textContent=maxGuesses;
-      usedLettersDisplay.textContent='';
-      messageDisplay.textContent='';
-      updateWordDisplay();
-      drawHangman();
-    }
-
-    function updateWordDisplay(){
-      wordDisplay.textContent=currentWord.split('').map(letter=> guessedLetters.includes(letter) ? letter :' _').join(' ');
-    }
-
-    guessBtn.addEventListener('click', ()=> {
-      const guess=guessInput.value.trim().toLowerCase();
-      if (!guess || guess.length !==1 || !/[a-z]/.test(guess)) {
-        messageDisplay.textContent= 'Please enter a single letter!';
-        return;
+      #hangmanCanvas {
+        margin: 20px 0;
       }
 
-      if (guessedLetters.includes(guess)) {
-        messageDisplay.textContent=`You already guessed that letters!`;
+      .word-display {
+        font-size: 36px;
+        letter-spacing: 5px;
+        margin: 20px 0;
+        color: #00cc99;
       }
-      guessedLetters.push(guess)
-      usedLettersDisplay.textContent= guessedLetters.join(', ');
 
-      if (currentWord.includes(guess)) {
+      input {
+        padding: 8px;
+        font-size: 16px;
+        width: 100px;
+        margin: 10px 0;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        background-color: #34495e;
+        color: #fff;
+      }
+
+      button {
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        padding: 10px 20px;
+        font-size: 18px;
+        background-color: #0984e3;
+        color: white;
+        margin: 5px;
+      }
+
+      button:hover {
+        background-color: #0652dd;
+      }
+
+      #newGameBtn {
+        background-color: #00b894;
+      }
+
+      #newGameBtn:hover {
+        background-color: #009975;
+      }
+
+      .message {
+        margin-top: 20px;
+        font-weight: bold;
+      }
+
+      #buttonq {
+        margin-top: 25px;
+        outline: 0;
+        grid-gap: 8px;
+        align-items: center;
+        background: 0 0;
+        border: 1px solid #f8f6f6;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        flex-shrink: 0;
+        font-size: 16px;
+        gap: 8px;
+        justify-content: center;
+        line-height: 1.5;
+        overflow: hidden;
+        padding: 12px 16px;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        transition: all 0.14s ease-out;
+        white-space: nowrap;
+        &:hover {
+          box-shadow: 4px 4px 0 #f5f2f2;
+          transform: translate(-4px, -4px);
+        }
+        &:focus-visible {
+          outline-offset: 1px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button id="buttonq">home</button>
+      <h1>Interactive Hangman</h1>
+      <p>Wins: <span id="wins">0</span></p>
+      <canvas id="hangmanCanvas" width="200" height="200"></canvas>
+      <div id="wordDisplay" class="word-display"></div>
+      <p>Guess Left: <span id="guessLeft">6</span></p>
+      <p>Used Letters: <span id="usedLetters"></span></p>
+      <input
+        type="text"
+        id="guessInput"
+        placeholder="guesss a letter"
+        maxlength="1"
+      />
+      <button id="guessBtn">Guess</button>
+      <button id="newGameBtn">New Game</button>
+      <p id="message" class="message"></p>
+    </div>
+    <script>
+      const winsDisplay = document.getElementById("wins");
+      const hangmanCanvas = document.getElementById("hangmanCanvas");
+      const ctx = hangmanCanvas.getContext("2d");
+      const wordDisplay = document.getElementById("wordDisplay");
+      const guessLeftDisplay = document.getElementById("guessLeft");
+      const usedLettersDisplay = document.getElementById("usedLetters");
+      const guessInput = document.getElementById("guessInput");
+      const guessBtn = document.getElementById("guessBtn");
+      const newGameBtn = document.getElementById("newGameBtn");
+      const messageDisplay = document.getElementById("message");
+      const button = document.getElementById("buttonq");
+
+      button.addEventListener("click", () => {
+        location.href = "/index.html";
+      });
+
+      const words = ["rocket", "galaxy", "planet", "comet"];
+      let currentWord = "";
+      let guessedLetters = [];
+      let wrongGuesses = 0;
+      let wins = 0;
+      const maxGuesses = 6;
+
+      function drawHangman() {
+        ctx.clearRect(0, 0, hangmanCanvas.width, hangmanCanvas.height);
+        ctx.strokeStyle = "#ecf0f1";
+        ctx.lineWidth = 2;
+
+        if (wrongGuesses >= 1) {
+          ctx.strokeRect(50, 150, 100, 10);
+        }
+
+        if (wrongGuesses >= 2) {
+          ctx.beginPath();
+          ctx.moveTo(100, 150);
+          ctx.lineTo(100, 50);
+          ctx.stroke();
+        }
+
+        if (wrongGuesses >= 3) {
+          ctx.beginPath();
+          ctx.moveTo(100, 50);
+          ctx.lineTo(150, 50);
+          ctx.stroke();
+        }
+
+        if (wrongGuesses >= 4) {
+          ctx.beginPath();
+          ctx.moveTo(150, 50);
+          ctx.lineTo(150, 70);
+          ctx.stroke();
+        }
+
+        if (wrongGuesses >= 5) {
+          ctx.beginPath();
+          ctx.arc(150, 90, 20, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        if (wrongGuesses >= 6) {
+          ctx.beginPath();
+          ctx.moveTo(150, 110);
+          ctx.lineTo(150, 130);
+          ctx.moveTo(150, 130);
+          ctx.lineTo(130, 150);
+          ctx.moveTo(150, 130);
+          ctx.lineTo(170, 150);
+          ctx.moveTo(150, 110);
+          ctx.lineTo(130, 130);
+          ctx.moveTo(150, 110);
+          ctx.lineTo(170, 130);
+          ctx.stroke();
+        }
+      }
+
+      function newGame() {
+        currentWord = words[Math.floor(Math.random() * words.length)];
+        guessedLetters = [];
+        wrongGuesses = 0;
+        guessLeftDisplay.textContent = maxGuesses;
+        usedLettersDisplay.textContent = "";
+        messageDisplay.textContent = "";
         updateWordDisplay();
-        if (!wordDisplay.textContent.includes('_')) {
-          wins++;
-          winsDisplay.textContent= wins;
-          messageDisplay.textContent='You won! starting new game...';
+        drawHangman();
       }
-    } else {
-      wrongGuesses++;
-      guessLeftDisplay.textContent=maxGuesses- wrongGuesses;
-      drawHangman();
-      if (wrongGuesses === maxGuesses) {
-        messageDisplay.textContent=`Game Over! the word was "${currentWord}".`;
-        setTimeout(newGame, 2000)
+
+      function updateWordDisplay() {
+        wordDisplay.textContent = currentWord
+          .split("")
+          .map((letter) => (guessedLetters.includes(letter) ? letter : " _"))
+          .join(" ");
       }
-    }
-    guessInput.value='';
-  }
-  );
 
-  newGameBtn.addEventListener('click', newGame);
+      guessBtn.addEventListener("click", () => {
+        const guess = guessInput.value.trim().toLowerCase();
+        if (!guess || guess.length !== 1 || !/[a-z]/.test(guess)) {
+          messageDisplay.textContent = "Please enter a single letter!";
+          return;
+        }
 
-  newGame();
-  </script>
-</body>
+        if (guessedLetters.includes(guess)) {
+          messageDisplay.textContent = `You already guessed that letters!`;
+        }
+        guessedLetters.push(guess);
+        usedLettersDisplay.textContent = guessedLetters.join(", ");
+
+        if (currentWord.includes(guess)) {
+          updateWordDisplay();
+          if (!wordDisplay.textContent.includes("_")) {
+            wins++;
+            winsDisplay.textContent = wins;
+            messageDisplay.textContent = "You won! starting new game...";
+          }
+        } else {
+          wrongGuesses++;
+          guessLeftDisplay.textContent = maxGuesses - wrongGuesses;
+          drawHangman();
+          if (wrongGuesses === maxGuesses) {
+            messageDisplay.textContent = `Game Over! the word was "${currentWord}".`;
+            setTimeout(newGame, 2000);
+          }
+        }
+        guessInput.value = "";
+      });
+
+      newGameBtn.addEventListener("click", newGame);
+
+      newGame();
+    </script>
+  </body>
 </html>

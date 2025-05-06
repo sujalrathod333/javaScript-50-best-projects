@@ -1,141 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Random Quotes Generator</title>
-  <style>
-    body{
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #282c34;
-      color: white;
-      text-align: center;
-      flex-direction: column;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Random Quotes Generator</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #282c34;
+        color: white;
+        text-align: center;
+        flex-direction: column;
+      }
 
-  .container{
-    max-width: 500px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: 10px;
-  }
-  button{
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #ff4b5c;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  button:hover{
-    background: #e43f5a;
-  }
+      .container {
+        max-width: 500px;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #ff4b5c;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      button:hover {
+        background: #e43f5a;
+      }
 
-  </style>
-</head>
-<body>
-  <div class="conatiner">
-    <h2>Quotes</h2>
-    <p id="quote">Click the button to get quote</p>
-    <h3 id="author"></h3>
-    <button id="new-quote">New Quote</button>
-  </div>
-  <script>
-    
-  const quotes = [
-    {
-      "text": "The only limit to our realization of tomorrow is our doubts of today.",
-      "author": "Franklin D. Roosevelt"
-    },
-    {
-      "text": "In the middle of every difficulty lies opportunity.",
-      "author": "Albert Einstein"
-    },
-    {
-      "text": "Success is not final, failure is not fatal: it is the courage to continue that counts.",
-      "author": "Winston Churchill"
-    },
-    {
-      "text": "Do what you can, with what you have, where you are.",
-      "author": "Theodore Roosevelt"
-    },
-    {
-      "text": "Believe you can and you're halfway there.",
-      "author": "Theodore Roosevelt"
-    },
-    {
-      "text": "It does not matter how slowly you go as long as you do not stop.",
-      "author": "Confucius"
-    },
-    {
-      "text": "Act as if what you do makes a difference. It does.",
-      "author": "William James"
-    },
-    {
-      "text": "The best way to predict the future is to create it.",
-      "author": "Peter Drucker"
-    },
-    {
-      "text": "Happiness depends upon ourselves.",
-      "author": "Aristotle"
-    },
-    {
-      "text": "If you want to lift yourself up, lift up someone else.",
-      "author": "Booker T. Washington"
-    },
-    {
-      "text": "Opportunities don't happen. You create them.",
-      "author": "Chris Grosser"
-    },
-    {
-      "text": "It always seems impossible until it’s done.",
-      "author": "Nelson Mandela"
-    },
-    {
-      "text": "The future belongs to those who believe in the beauty of their dreams.",
-      "author": "Eleanor Roosevelt"
-    },
-    {
-      "text": "Don’t let yesterday take up too much of today.",
-      "author": "Will Rogers"
-    },
-    {
-      "text": "Dream big and dare to fail.",
-      "author": "Norman Vaughan"
-    },
-    {
-      "text": "Do what you feel in your heart to be right—for you’ll be criticized anyway.",
-      "author": "Eleanor Roosevelt"
-    },
-    {
-      "text": "Success is getting what you want. Happiness is wanting what you get.",
-      "author": "Dale Carnegie"
-    },
-    {
-      "text": "Don't watch the clock; do what it does. Keep going.",
-      "author": "Sam Levenson"
-    },
-    {
-      "text": "You are never too old to set another goal or to dream a new dream.",
-      "author": "C.S. Lewis"
-    },
-    {
-      "text": "The only way to do great work is to love what you do.",
-      "author": "Steve Jobs"
-    }
-  ]
+      #buttonq {
+        color: rgb(247, 245, 245);
+        margin-top: 25px;
+        outline: 0;
+        grid-gap: 8px;
+        align-items: center;
+        background: 0 0;
+        border: 1px solid #f8f6f6;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        flex-shrink: 0;
+        font-size: 16px;
+        gap: 8px;
+        justify-content: center;
+        line-height: 1.5;
+        overflow: hidden;
+        padding: 12px 16px;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        transition: all 0.14s ease-out;
+        white-space: nowrap;
+        &:hover {
+          box-shadow: 4px 4px 0 #f5f0f0;
+          transform: translate(-4px, -4px);
+        }
+        &:focus-visible {
+          outline-offset: 1px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="conatiner">
+      <button id="buttonq">home</button>
+      <h2>Quotes</h2>
+      <p id="quote">Click the button to get quote</p>
+      <h3 id="author"></h3>
+      <button id="new-quote">New Quote</button>
+    </div>
+    <script>
+      const button = document.getElementById("buttonq");
 
-  document.getElementById("new-quote").addEventListener("click", function() {
-    let random = Math.floor(Math.random() * quotes.length);
-    document.getElementById("quote").innerText = quotes[random].text;
-    document.getElementById("author").innerText =` - ${quotes[random].author}`;
+      button.addEventListener("click", () => {
+        location.href = "/index.html";
+      });
 
-  })
+      const quotes = [
+        {
+          text: "The only limit to our realization of tomorrow is our doubts of today.",
+          author: "Franklin D. Roosevelt",
+        },
+        {
+          text: "In the middle of every difficulty lies opportunity.",
+          author: "Albert Einstein",
+        },
+        {
+          text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+          author: "Winston Churchill",
+        },
+        {
+          text: "Do what you can, with what you have, where you are.",
+          author: "Theodore Roosevelt",
+        },
+        {
+          text: "Believe you can and you're halfway there.",
+          author: "Theodore Roosevelt",
+        },
+        {
+          text: "It does not matter how slowly you go as long as you do not stop.",
+          author: "Confucius",
+        },
+        {
+          text: "Act as if what you do makes a difference. It does.",
+          author: "William James",
+        },
+        {
+          text: "The best way to predict the future is to create it.",
+          author: "Peter Drucker",
+        },
+        {
+          text: "Happiness depends upon ourselves.",
+          author: "Aristotle",
+        },
+        {
+          text: "If you want to lift yourself up, lift up someone else.",
+          author: "Booker T. Washington",
+        },
+        {
+          text: "Opportunities don't happen. You create them.",
+          author: "Chris Grosser",
+        },
+        {
+          text: "It always seems impossible until it’s done.",
+          author: "Nelson Mandela",
+        },
+        {
+          text: "The future belongs to those who believe in the beauty of their dreams.",
+          author: "Eleanor Roosevelt",
+        },
+        {
+          text: "Don’t let yesterday take up too much of today.",
+          author: "Will Rogers",
+        },
+        {
+          text: "Dream big and dare to fail.",
+          author: "Norman Vaughan",
+        },
+        {
+          text: "Do what you feel in your heart to be right—for you’ll be criticized anyway.",
+          author: "Eleanor Roosevelt",
+        },
+        {
+          text: "Success is getting what you want. Happiness is wanting what you get.",
+          author: "Dale Carnegie",
+        },
+        {
+          text: "Don't watch the clock; do what it does. Keep going.",
+          author: "Sam Levenson",
+        },
+        {
+          text: "You are never too old to set another goal or to dream a new dream.",
+          author: "C.S. Lewis",
+        },
+        {
+          text: "The only way to do great work is to love what you do.",
+          author: "Steve Jobs",
+        },
+      ];
 
-
-  </script>
-</body>
+      document
+        .getElementById("new-quote")
+        .addEventListener("click", function () {
+          let random = Math.floor(Math.random() * quotes.length);
+          document.getElementById("quote").innerText = quotes[random].text;
+          document.getElementById(
+            "author"
+          ).innerText = ` - ${quotes[random].author}`;
+        });
+    </script>
+  </body>
 </html>
